@@ -121,6 +121,8 @@ public class Main {
 					}
 				}
 			break;
+		case 0:
+			break;
 		}
 	}
 }
