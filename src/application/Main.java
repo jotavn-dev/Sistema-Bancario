@@ -16,7 +16,7 @@ public class Main {
 
 	public static Scanner scanner;
 
-	public static Conta contaCorrente = new ContaCorrente();
+	public static Conta contaCorrente = new ContaCorrente(1001, 0002-9, 1000.0, 2000.0);
 	public static Conta contaPoupanca = new ContaPoupanca();
 
 	static void main(String[] args) {
@@ -87,6 +87,39 @@ public class Main {
 			for (Object ext : contaCorrente.getExtratos()) {
 				System.out.println(ext);
 			}
+			break;
+		case 6:
+			Map<String, Double> parcelas = new LinkedHashMap<>();
+			System.out.println("1 - Você quer fazer um emprestimo: ");
+			System.out.print("2 - Você quer consultar as parcelas:\n-> ");
+			int opcaoEmprestimo = scanner.nextInt();
+			
+			System.out.println();
+			if (opcaoEmprestimo == 1) {
+				System.out.print("Qual valor do emprestimo: R$ ");
+				double quantia = scanner.nextDouble();
+				System.out.print("Qual o prazo: ");
+				int prazo = scanner.nextInt();
+		
+				if (contaCorrente instanceof ContaCorrente cc) {
+					if (cc.concederEmprestimo(quantia)) {
+						System.out.println("Emprestimo de R$ " + String.format("%.2f", quantia) + " aprovado.");
+						
+						for (int i=0; i<prazo; i++) {
+							double valorParcela = cc.realizarEmprestimo(quantia/prazo, (i+1));
+							parcelas.put((i+1) + " - parcela", valorParcela);
+						}
+					}
+					else {
+						System.out.println("Emprestimo negado. Valor excede o limite disponível");
+						}
+					}
+				}
+			else if (opcaoEmprestimo == 2) {
+				for (String parcela : parcelas.keySet()) {
+					System.out.println(parcela + " - R$ " + String.format("%.2f\n", parcelas.get(parcela)));
+					}
+				}
 			break;
 		}
 	}
