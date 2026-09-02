@@ -56,6 +56,10 @@ public class Main {
 		case 1:
 			System.out.println("Saldo: R$ " + String.format("%.2f", contaCorrente.getSaldo()));
 			break;
+		case 2:
+			System.out.print("Qual valor do deposito: R$ ");
+			contaCorrente.deposito(scanner.nextDouble());
+			break;
 		}
 	}
 }
