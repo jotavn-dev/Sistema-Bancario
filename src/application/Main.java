@@ -50,5 +50,12 @@ public class Main {
 		
 		System.out.print("Escolha a opção: ");
 		int opcao = scanner.nextInt();
+		
+		switch (opcao) {
+		
+		case 1:
+			System.out.println("Saldo: R$ " + String.format("%.2f", contaCorrente.getSaldo()));
+			break;
+		}
 	}
 }
