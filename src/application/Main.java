@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import model.entities.Cliente;
 import model.entities.Conta;
@@ -24,18 +26,32 @@ public class Main {
 		Locale.setDefault(Locale.US);
 		scanner = new Scanner(System.in);
 
+		login();
+		
 		menu();
 	}
 
 	public static void login() {
+		String linha = "=".repeat(15);
+		System.out.println(linha+" Login "+linha);
 		System.out.print("Nome completo:\n-> ");
 		String name = scanner.nextLine();
-
+		
+		while (identificarRegex(name)) {
+			System.out.println("Digite somente letras!");
+			System.out.print("Tente Novamente:\n-> ");
+			name = scanner.nextLine();
+		}
+		
 		System.out.print("CPF:\n-> ");
 		int cpf = scanner.nextInt();
-
+		
 		System.out.print("Senha:\n-> ");
 		int senha = scanner.nextInt();
+		
+		System.out.println("\n" + "=".repeat(30));
+		
+		Cliente cliente = new Cliente(name, String.valueOf(cpf));
 	}
 
 	public static void menu() {
@@ -124,5 +140,12 @@ public class Main {
 		case 0:
 			break;
 		}
+	}
+	
+	public static boolean identificarRegex(String texto) {
+		Pattern patternNumero = Pattern.compile("[^\\p{L}\\s]");
+		Matcher temNumeroOuSimbolo = patternNumero.matcher(texto);
+		
+		return temNumeroOuSimbolo.find();
 	}
 }
