@@ -64,6 +64,25 @@ public class Main {
 			System.out.println("Qual valor do saque: R$ ");
 			contaCorrente.saque(scanner.nextDouble());
 			break;
+		case 4:
+			System.out.println("Em qual conta você quer transferir seu dinheiro:");
+			System.out.println("   1 - Conta Poupanca:");
+			System.out.print("   2 - Conta Corrente:\n-> ");
+			int opcaoTransferencia = scanner.nextInt();
+			
+			System.out.print("Digite o valor: ");
+			double valor = scanner.nextDouble();
+			
+			if (opcaoTransferencia == 1) {
+				contaCorrente.transferir(contaPoupanca, valor);
+			}
+			else if (opcaoTransferencia == 2) {
+				contaPoupanca.transferir(contaCorrente, valor);
+			}
+			else {
+				System.out.println("Opção errada! Tente Novamente.");
+			}
+			break;
 		}
 	}
 }
