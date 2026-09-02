@@ -60,6 +60,10 @@ public class Main {
 			System.out.print("Qual valor do deposito: R$ ");
 			contaCorrente.deposito(scanner.nextDouble());
 			break;
+		case 3:
+			System.out.println("Qual valor do saque: R$ ");
+			contaCorrente.saque(scanner.nextDouble());
+			break;
 		}
 	}
 }
