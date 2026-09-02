@@ -83,6 +83,11 @@ public class Main {
 				System.out.println("Opção errada! Tente Novamente.");
 			}
 			break;
+		case 5:
+			for (Object ext : contaCorrente.getExtratos()) {
+				System.out.println(ext);
+			}
+			break;
 		}
 	}
 }
