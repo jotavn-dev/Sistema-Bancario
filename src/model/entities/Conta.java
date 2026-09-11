@@ -7,7 +7,7 @@ import java.util.List;
 public abstract class Conta {
 
 	private Integer numero;
-	private Integer agencia;
+	private String agencia;
 	protected double saldo;
 	
 	private List<Object> extratos = new ArrayList<>();
@@ -15,7 +15,7 @@ public abstract class Conta {
 	public Conta() {
 	}
 
-	public Conta(Integer numero, Integer agencia, Double saldo) {
+	public Conta(Integer numero, String agencia, Double saldo) {
 		this.numero = numero;
 		this.agencia = agencia;
 		this.saldo = saldo;
@@ -29,11 +29,11 @@ public abstract class Conta {
 		this.numero = numero;
 	}
 
-	public Integer getAgencia() {
+	public String getAgencia() {
 		return agencia;
 	}
 
-	public void setAgencia(Integer agencia) {
+	public void setAgencia(String agencia) {
 		this.agencia = agencia;
 	}
 
@@ -56,4 +56,11 @@ public abstract class Conta {
 	public abstract void saque(double valor);
 	
 	public abstract void transferir(Conta conta, double valor);
+	
+	@Override
+	public String toString() {
+		return "Titular: " + numero +
+				"\nAgencia: " + agencia +
+				"\nSaldo: " + saldo;
+	}
 }

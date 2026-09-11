@@ -32,6 +32,4 @@ public class Cliente {
 	public void setConta(Conta conta) {
 		this.conta = conta;
 	}
-	
-	
 }
