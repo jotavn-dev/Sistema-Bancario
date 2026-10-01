@@ -60,6 +60,13 @@ public abstract class Conta {
 			saldo += valor;
 		}
 	}
+	
+	public void realizarTransferencia(Conta conta, double valor) {
+		if (concederTransferencia(valor)) {
+			this.realizarSaque(valor);
+			conta.realizarDeposito(valor);
+		}
+	}
 
 	public abstract void addExtrato(Conta conta, Cliente cliente);
 	
@@ -67,7 +74,7 @@ public abstract class Conta {
 	
 	public abstract boolean concederSaque(double valor);
 	
-	public abstract void transferir(Conta conta, double valor);
+	public abstract boolean concederTransferencia(double valor);
 	
 	@Override
 	public String toString() {
