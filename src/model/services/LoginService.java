@@ -7,8 +7,6 @@ import model.entities.Cliente;
 import util.Validacoes;
 
 public class LoginService {
-
-	private static Validacoes validacao;
 	
 	public static final Scanner scanner = new Scanner(System.in);
 	
@@ -18,7 +16,7 @@ public class LoginService {
 		System.out.print("Nome completo: ");
 		String name = scanner.nextLine();
 
-		while (validacao.identificarRegex(name)) {
+		while (Validacoes.identificarRegex(name)) {
 			System.out.println("Digite somente letras!");
 			System.out.print("Tente Novamente: ");
 			name = scanner.nextLine();
@@ -34,7 +32,7 @@ public class LoginService {
 					cpf = scanner.nextLong();
 				}
 				
-				String cpfFormatado = validacao.formatadorCpf(cpf);
+				String cpfFormatado = Validacoes.formatadorCpf(cpf);
 				Cliente cliente = new Cliente(name, cpfFormatado);
 				break;
 			} 
