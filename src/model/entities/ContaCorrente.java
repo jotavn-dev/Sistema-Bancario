@@ -57,11 +57,8 @@ public class ContaCorrente extends Conta {
 	}
 	
 	@Override
-	public void deposito(double valor) {
-		saldo += valor;
-		this.getExtratos().add("Deposito: R$ " + String.format("%.2f", valor));
-		this.getExtratos().add(fm1.format(LocalDateTime.now()));
-		System.out.println("Depósito realizado com sucesso!");
+	public boolean concederDeposito(double valor) {
+		return valor > 0.0;
 	}
 	
 	@Override
