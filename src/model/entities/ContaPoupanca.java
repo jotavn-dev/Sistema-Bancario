@@ -25,8 +25,8 @@ public class ContaPoupanca extends Conta {
 	}
 
 	@Override
-	public void deposito(double valor) {
-		saldo += valor;
+	public boolean concederDeposito(double valor) {
+		return valor > 0.0;
 	}
 	
 	@Override

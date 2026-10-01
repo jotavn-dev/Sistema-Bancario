@@ -54,10 +54,16 @@ public abstract class Conta {
 			saldo -= valor;
 		}
 	}
+	
+	public void realizarDeposito(double valor) {
+		if (this.concederDeposito(valor)) {
+			saldo += valor;
+		}
+	}
 
 	public abstract void addExtrato(Conta conta, Cliente cliente);
 	
-	public abstract void deposito(double valor);
+	public abstract boolean concederDeposito(double valor);
 	
 	public abstract boolean concederSaque(double valor);
 	
