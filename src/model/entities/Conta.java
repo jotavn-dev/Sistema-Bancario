@@ -48,12 +48,18 @@ public abstract class Conta {
 	public void setExtratos(List<Object> extratos) {
 		this.extratos = extratos;
 	}
+	
+	public void realizarSaque(double valor) {
+		if (this.concederSaque(valor)) {
+			saldo -= valor;
+		}
+	}
 
 	public abstract void addExtrato(Conta conta, Cliente cliente);
 	
 	public abstract void deposito(double valor);
 	
-	public abstract void saque(double valor);
+	public abstract boolean concederSaque(double valor);
 	
 	public abstract void transferir(Conta conta, double valor);
 	
