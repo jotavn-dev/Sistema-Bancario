@@ -20,11 +20,11 @@ public class ContaCorrente extends Conta {
 		this.taxaPagamento = taxaPagamento;
 	}
 
-	public double getLimteCredito() {
+	public double getLimiteCredito() {
 		return limiteCredito;
 	}
 
-	public void setLimteCredito(double limiteCredito) {
+	public void setLimiteCredito(double limiteCredito) {
 		this.limiteCredito = limiteCredito;
 	}
 	
@@ -65,16 +65,8 @@ public class ContaCorrente extends Conta {
 	}
 	
 	@Override
-	public void saque(double valor) {
-		if (valor <= saldo) {
-			this.saldo -= valor + 2.00;
-			this.getExtratos().add("Saque: R$ " + String.format("%.2f", valor));
-			this.getExtratos().add(fm1.format(LocalDateTime.now()));
-			System.out.println("Saque realizado com sucesso!");
-		}
-		else {
-			System.out.println("Saldo insuficiente!");
-		}
+	public boolean concederSaque(double valor) {
+		return valor <= getSaldo() + getLimiteCredito();
 	}
 	
 	public static class Builder {

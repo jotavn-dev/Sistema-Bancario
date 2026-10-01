@@ -30,13 +30,8 @@ public class ContaPoupanca extends Conta {
 	}
 	
 	@Override
-	public void saque(double valor) {
-		if (valor <= saldo) {
-			saldo -= valor;
-		}
-		else {
-			System.out.println("Saldo insuficiente!");
-		}
+	public boolean concederSaque(double valor) {
+		return valor <= getSaldo();
 	}
 	
 	public static class Builder {
