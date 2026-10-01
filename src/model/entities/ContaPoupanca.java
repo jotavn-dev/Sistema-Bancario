@@ -19,9 +19,8 @@ public class ContaPoupanca extends Conta {
 	}
 	
 	@Override
-	public void transferir(Conta conta, double valor) {
-		this.saque(valor);
-		conta.deposito(valor);
+	public boolean concederTransferencia(double valor) {
+		return this.concederSaque(valor) && this.concederDeposito(valor);
 	}
 
 	@Override
