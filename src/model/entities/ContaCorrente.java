@@ -65,6 +65,11 @@ public class ContaCorrente extends Conta {
 		return valor <= getSaldo() + getLimiteCredito();
 	}
 	
+	@Override
+	public Double taxa(double valor) {
+		return taxaPagamento.tax(valor);
+	}
+	
 	public static class Builder {
 		private Integer numero;
 		private String agencia;
@@ -92,7 +97,7 @@ public class ContaCorrente extends Conta {
 			return this;
 		}
 		
-		public Builder setTaxaPagmento(TaxaPagamento taxaPagamento) {
+		public Builder setTaxaPagamento(TaxaPagamento taxaPagamento) {
 			this.taxaPagamento = taxaPagamento;
 			return this;
 		}
