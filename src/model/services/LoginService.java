@@ -8,9 +8,13 @@ import util.Validacoes;
 
 public class LoginService {
 	
-	public static final Scanner scanner = new Scanner(System.in);
+	private Scanner scanner;
 	
-	public static void login() {
+	public LoginService(Scanner scanner) {
+		this.scanner = scanner;
+	}
+	
+	public void login() {
 		String linha = "=".repeat(15);
 		System.out.println(linha + " Login " + linha + "\n");
 		System.out.print("Nome completo: ");
@@ -46,5 +50,6 @@ public class LoginService {
 		int senha = scanner.nextInt();
 		
 		System.out.println("\n" + "=".repeat(37) + "\n");
+		
 	}
 }

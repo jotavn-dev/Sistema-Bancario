@@ -1,10 +1,8 @@
 package model.entities;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import model.services.TaxaPagamento;
-import model.services.TaxaPagamentoBrasil;
 
 public class ContaCorrente extends Conta {
 

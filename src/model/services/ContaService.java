@@ -1,6 +1,5 @@
 package model.services;
 
-import java.io.Console;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,15 +12,25 @@ import model.entities.ContaPoupanca;
 
 public class ContaService {
 
-	public static Scanner scanner = new Scanner(System.in);
+	private Scanner scanner;
+	
+	public ContaService(Scanner scanner) {
+		this.scanner = scanner;
+	}
 
-	public static Conta contaCorrente = new ContaCorrente.Builder().setNumero(1001).setAgencia("0002-4")
-			.setSaldo(1000.0).setLimiteCredito(2000.0).setTaxaPagamento(new TaxaPagamentoBrasil()).build();
+	public Conta contaCorrente = new ContaCorrente.Builder()
+			.setNumero(1001).setAgencia("0002-4")
+			.setSaldo(1000.0).setLimiteCredito(2000.0)
+			.setTaxaPagamento(new TaxaPagamentoBrasil())
+			.build();
 
-	public static Conta contaPoupanca = new ContaPoupanca.Builder().setNumero(1003).setAgencia("0234-1").setSaldo(500.0)
-			.setTaxaPagamento(new TaxaPagamentoBrasil()).build();
+	public Conta contaPoupanca = new ContaPoupanca.Builder()
+			.setNumero(1003).setAgencia("0234-1")
+			.setSaldo(500.0)
+			.setTaxaPagamento(new TaxaPagamentoBrasil())
+			.build();
 
-	public static void menu() {
+	public void menu() {
 
 		List<String> menu = Arrays.asList("Consultar saldo", "Depositar", "Sacar", "Transferir", "Extrato",
 				"Emprestimo");
@@ -45,11 +54,11 @@ public class ContaService {
 				break;
 			case 2:
 				System.out.print("Qual valor do deposito: R$ ");
-				contaCorrente.deposito(scanner.nextDouble());
+				contaCorrente.realizarDeposito(scanner.nextDouble());
 				break;
 			case 3:
 				System.out.println("Qual valor do saque: R$ ");
-				contaCorrente.saque(scanner.nextDouble());
+				contaCorrente.realizarSaque(scanner.nextDouble());
 				break;
 			case 4:
 				System.out.println("Em qual conta você quer transferir seu dinheiro:");
@@ -61,9 +70,9 @@ public class ContaService {
 				double valor = scanner.nextDouble();
 
 				if (opcaoTransferencia == 1) {
-					contaCorrente.transferir(contaPoupanca, valor);
+					contaCorrente.realizarTransferencia(contaPoupanca, valor);
 				} else if (opcaoTransferencia == 2) {
-					contaPoupanca.transferir(contaCorrente, valor);
+					contaPoupanca.realizarTransferencia(contaCorrente, valor);
 				} else {
 					System.out.println("Opção errada! Tente Novamente.");
 				}

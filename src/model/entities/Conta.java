@@ -11,9 +11,6 @@ public abstract class Conta {
 	
 	private List<Object> extratos = new ArrayList<>();
 
-	public Conta() {
-	}
-
 	public Conta(Integer numero, String agencia, Double saldo) {
 		this.numero = numero;
 		this.agencia = agencia;
@@ -57,17 +54,17 @@ public abstract class Conta {
 	}
 	
 	public void realizarDeposito(double subValor) {
-		Double valorTotal = subValor + taxa(subValor);
-		
-		if (this.concederDeposito(valorTotal)) {
-			saldo += valorTotal;
+		if (this.concederDeposito(subValor)) {
+			saldo += subValor;
 		}
 	}
 	
 	public void realizarTransferencia(Conta conta, double valor) {
-		if (concederTransferencia(valor)) {
-			this.realizarSaque(valor);
-			conta.realizarDeposito(valor);
+		Double valorTotal = valor + taxa(valor);
+		
+		if (concederTransferencia(valorTotal)) {
+			this.realizarSaque(valorTotal);
+			conta.realizarDeposito(valorTotal);
 		}
 	}
 
