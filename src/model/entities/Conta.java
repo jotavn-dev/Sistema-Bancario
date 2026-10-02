@@ -6,13 +6,17 @@ import java.util.List;
 
 public abstract class Conta {
 	
+	protected final int HORA_INICIO_NOTURNO = 20;
+	protected final double LIMITE_DEPOSITO_DIURNO = 10000.0;
+	protected final double LIMITE_DEPOSITO_NORTUNO = 1000.0;
+	
 	private Integer numero;
 	private String agencia;
 	protected double saldo;
 	
 	private List<Object> extratos = new ArrayList<>();
 	
-	private DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+	protected DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
 	public Conta(Integer numero, String agencia, Double saldo) {
 		this.numero = numero;
