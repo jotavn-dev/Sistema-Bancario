@@ -33,6 +33,11 @@ public class ContaPoupanca extends Conta {
 		return valor <= getSaldo();
 	}
 	
+	@Override
+	public Double taxa(double valor) {
+		return 0.0;
+	}
+	
 	public static class Builder {
 		private Integer numero;
 		private String agencia;

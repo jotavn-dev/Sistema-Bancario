@@ -1,6 +1,5 @@
 package model.entities;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +74,8 @@ public abstract class Conta {
 	public abstract boolean concederSaque(double valor);
 	
 	public abstract boolean concederTransferencia(double valor);
+	
+	public abstract Double taxa(double valor);
 	
 	@Override
 	public String toString() {
