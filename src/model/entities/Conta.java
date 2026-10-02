@@ -48,15 +48,19 @@ public abstract class Conta {
 		this.extratos = extratos;
 	}
 	
-	public void realizarSaque(double valor) {
-		if (this.concederSaque(valor)) {
-			saldo -= valor;
+	public void realizarSaque(double subValor) {
+		Double valorTotal = subValor + taxa(subValor);
+		
+		if (this.concederSaque(valorTotal)) {
+			saldo -= valorTotal;
 		}
 	}
 	
-	public void realizarDeposito(double valor) {
-		if (this.concederDeposito(valor)) {
-			saldo += valor;
+	public void realizarDeposito(double subValor) {
+		Double valorTotal = subValor + taxa(subValor);
+		
+		if (this.concederDeposito(valorTotal)) {
+			saldo += valorTotal;
 		}
 	}
 	
