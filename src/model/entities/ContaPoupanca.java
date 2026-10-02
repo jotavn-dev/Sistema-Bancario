@@ -73,4 +73,12 @@ public class ContaPoupanca extends Conta {
 	public String toString() {
 		return super.toString();
 	}
+
+	public TaxaPagamento getTaxaPagamento() {
+		return taxaPagamento;
+	}
+
+	public void setTaxaPagamento(TaxaPagamento taxaPagamento) {
+		this.taxaPagamento = taxaPagamento;
+	}
 }

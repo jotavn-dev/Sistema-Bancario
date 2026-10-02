@@ -1,16 +1,18 @@
 package model.entities;
 
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 import model.services.TaxaPagamento;
 
 public class ContaCorrente extends Conta {
-
-	private DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	
 	private double limiteCredito;
 	
 	private TaxaPagamento taxaPagamento;
+	
+	private static final int HORA_INICIO_NOTURNO = 20;
+	private static final double LIMITE_DEPOSITO_DIURNO = 10000.0;
+	private static final double LIMITE_DEPOSITO_NORTUNO = 1000.0;
 
 	private ContaCorrente(Integer numero, String agencia, Double saldo, double limiteCredito, TaxaPagamento taxaPagamento) {
 		super(numero, agencia, saldo);
@@ -55,7 +57,18 @@ public class ContaCorrente extends Conta {
 	
 	@Override
 	public boolean concederDeposito(double valor) {
-		return valor > 0.0;
+		int hora = LocalDateTime.now().getHour();
+		
+		Double limiteDeposito;
+		
+		if (hora >= HORA_INICIO_NOTURNO) {
+			limiteDeposito = LIMITE_DEPOSITO_NORTUNO;
+		}
+		else {
+			limiteDeposito = LIMITE_DEPOSITO_DIURNO;
+		}
+		
+		return valor > 0.0 && valor <= limiteDeposito;
 	}
 	
 	@Override
