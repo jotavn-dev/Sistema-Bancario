@@ -2,7 +2,9 @@ package model.entities;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Conta {
 	
@@ -15,6 +17,7 @@ public abstract class Conta {
 	protected double saldo;
 	
 	private List<Object> extratos = new ArrayList<>();
+	private Map<String, String> fluxoParcelas = new HashMap<>();
 	
 	protected DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
@@ -76,7 +79,6 @@ public abstract class Conta {
 	}
 	
 	public void realizarEmprestimo(double subValor, int meses) {
-		calcularLimiteEmprestimo(meses);
 		
 		if (concederEmprestimo(subValor, meses)) {
 			saldo += subValor;
@@ -126,5 +128,8 @@ public abstract class Conta {
 		return "Titular: " + numero +
 				"\nAgencia: " + agencia +
 				"\nSaldo: " + saldo;
+	}
+	public Map<String, String> getFluxoParcelas() {
+		return fluxoParcelas;
 	}
 }
