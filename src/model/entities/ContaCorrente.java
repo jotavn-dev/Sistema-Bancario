@@ -73,7 +73,9 @@ public class ContaCorrente extends Conta {
 	}
 	
 	@Override
-	public Double taxa(double valor) {
+	protected boolean concederEmprestimo(double valor, int meses) {
+		return valor <= this.getLimiteEmprestimo();
+	}
 		return taxaPagamento.tax(valor);
 	}
 	
