@@ -8,7 +8,7 @@ public class ContaPoupanca extends Conta {
 
 	private TaxaPagamento taxaPagamento;
 
-	public ContaPoupanca(Integer numero, String agencia, Double saldo, TaxaPagamento taxaPagamento) {
+	private ContaPoupanca(Integer numero, String agencia, Double saldo, TaxaPagamento taxaPagamento) {
 		super(numero, agencia, saldo);
 		this.taxaPagamento = taxaPagamento;
 	}
@@ -21,12 +21,12 @@ public class ContaPoupanca extends Conta {
 	}
 
 	@Override
-	public boolean concederTransferencia(double valor) {
+	protected boolean concederTransferencia(double valor) {
 		return this.concederSaque(valor) && this.concederDeposito(valor);
 	}
 
 	@Override
-	public boolean concederDeposito(double valor) {
+	protected boolean concederDeposito(double valor) {
 		int hora = LocalDateTime.now().getHour();
 
 		Double limiteDeposito;
@@ -41,7 +41,7 @@ public class ContaPoupanca extends Conta {
 	}
 
 	@Override
-	public boolean concederSaque(double valor) {
+	protected boolean concederSaque(double valor) {
 		return valor <= getSaldo();
 	}
 
@@ -50,7 +50,7 @@ public class ContaPoupanca extends Conta {
 		return valor <= this.getLimiteEmprestimo();
 	}
 	@Override
-	public Double taxa(double valor) {
+	protected Double taxa(double valor) {
 		return 0.0;
 	}
 

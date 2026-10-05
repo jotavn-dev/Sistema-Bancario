@@ -47,12 +47,12 @@ public class ContaCorrente extends Conta {
 	}
 	
 	@Override
-	public boolean concederTransferencia(double valor) {
+	protected boolean concederTransferencia(double valor) {
 		return this.concederSaque(valor) && this.concederDeposito(valor);
 	}
 	
 	@Override
-	public boolean concederDeposito(double valor) {
+	protected boolean concederDeposito(double valor) {
 		int hora = LocalDateTime.now().getHour();
 		
 		Double limiteDeposito;
@@ -68,7 +68,7 @@ public class ContaCorrente extends Conta {
 	}
 	
 	@Override
-	public boolean concederSaque(double valor) {
+	protected boolean concederSaque(double valor) {
 		return valor <= getSaldo() + getLimiteCredito();
 	}
 	
@@ -76,6 +76,8 @@ public class ContaCorrente extends Conta {
 	protected boolean concederEmprestimo(double valor, int meses) {
 		return valor <= this.getLimiteEmprestimo();
 	}
+	@Override
+	protected Double taxa(double valor) {
 		return taxaPagamento.tax(valor);
 	}
 	
