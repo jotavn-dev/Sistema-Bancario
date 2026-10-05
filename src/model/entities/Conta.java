@@ -67,23 +67,59 @@ public abstract class Conta {
 	}
 	
 	public void realizarTransferencia(Conta conta, double valor) {
-		Double valorTotal = valor + taxa(valor);
+		Double valorTotal = valor += valor * taxa(valor);
 		
 		if (concederTransferencia(valorTotal)) {
 			this.realizarSaque(valorTotal);
 			conta.realizarDeposito(valorTotal);
 		}
 	}
+	
+	public void realizarEmprestimo(double subValor, int meses) {
+		calcularLimiteEmprestimo(meses);
+		
+		if (concederEmprestimo(subValor, meses)) {
+			saldo += subValor;
+			
+			double jurosComposto = subValor * 
+					Math.pow(1 + taxa(subValor), meses);
+			
+			double parcelas = jurosComposto / meses;
+			
+			for (int data = 1; data <= meses; data++) {
+				fluxoParcelas.put(data + " - parcela", String.format("R$ %.2f", parcelas));
+			}
+			
+			System.out.println("Emprestimo de R$ " + String.format("%.2f", subValor) + " aprovado.");
+		}
+		else {
+			if (subValor < 0.0) {
+				System.out.println("Emprestimo negado. O valor deve ser maior que R$ 0.00.");
+			}
+			
+			if (subValor > limiteEmprestimo) {
+				System.out.println("Emprestimo negado. O valor excede o seu limite de emprestimo.");
+			}
+		}
+	}
+	
+	public void fluxoParcelas() {
+		for (String consulta : fluxoParcelas.keySet()) {
+			System.out.println(consulta + " - " + this.getFluxoParcelas().get(consulta));
+		}
+	}
 
 	public abstract void addExtrato(Conta conta, Cliente cliente);
 	
-	public abstract boolean concederDeposito(double valor);
+	protected abstract boolean concederDeposito(double valor);
 	
-	public abstract boolean concederSaque(double valor);
+	protected abstract boolean concederSaque(double valor);
 	
-	public abstract boolean concederTransferencia(double valor);
+	protected abstract boolean concederTransferencia(double valor);
 	
-	public abstract Double taxa(double valor);
+	protected abstract boolean concederEmprestimo(double valor, int meses);
+	
+	protected abstract Double taxa(double valor);
 	
 	@Override
 	public String toString() {

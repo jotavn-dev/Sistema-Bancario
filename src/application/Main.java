@@ -3,6 +3,8 @@ package application;
 import java.util.Locale;
 import java.util.Scanner;
 
+import model.entities.Conta;
+import model.entities.ContaCorrente;
 import model.services.ContaService;
 import model.services.LoginService;
 
