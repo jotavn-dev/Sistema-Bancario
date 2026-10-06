@@ -18,6 +18,7 @@ public abstract class Conta {
 	private double limiteEmprestimo;
 	
 	private List<Object> extratos = new ArrayList<>();
+	
 	private Map<String, String> fluxoParcelas = new HashMap<>();
 	
 	protected DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -55,6 +56,7 @@ public abstract class Conta {
 	public void setExtratos(List<Object> extratos) {
 		this.extratos = extratos;
 	}
+	
 	private void calcularLimiteEmprestimo(int meses) {
 		double limiteEmprestimo = saldo * 0.30 * meses;
 		
@@ -86,7 +88,7 @@ public abstract class Conta {
 	
 	public void realizarEmprestimo(double subValor, int meses) {
 		calcularLimiteEmprestimo(meses);
-		
+
 		if (concederEmprestimo(subValor, meses)) {
 			saldo += subValor;
 			
@@ -136,9 +138,11 @@ public abstract class Conta {
 				"\nAgencia: " + agencia +
 				"\nSaldo: " + saldo;
 	}
+
 	public Map<String, String> getFluxoParcelas() {
 		return fluxoParcelas;
 	}
+	
 	public double getLimiteEmprestimo() {
 		return limiteEmprestimo;
 	}

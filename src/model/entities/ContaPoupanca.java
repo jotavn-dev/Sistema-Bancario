@@ -44,11 +44,12 @@ public class ContaPoupanca extends Conta {
 	protected boolean concederSaque(double valor) {
 		return valor <= getSaldo();
 	}
-
+	
 	@Override
 	protected boolean concederEmprestimo(double valor, int meses) {
 		return valor <= this.getLimiteEmprestimo();
 	}
+
 	@Override
 	protected Double taxa(double valor) {
 		return 0.0;

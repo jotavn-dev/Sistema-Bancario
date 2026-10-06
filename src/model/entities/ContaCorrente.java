@@ -9,7 +9,7 @@ public class ContaCorrente extends Conta {
 	private double limiteCredito;
 	
 	private TaxaPagamento taxaPagamento;
-
+	
 	private ContaCorrente(Integer numero, String agencia, Double saldo, double limiteCredito, TaxaPagamento taxaPagamento) {
 		super(numero, agencia, saldo);
 		this.limiteCredito = limiteCredito;
@@ -22,21 +22,6 @@ public class ContaCorrente extends Conta {
 
 	public void setLimiteCredito(double limiteCredito) {
 		this.limiteCredito = limiteCredito;
-	}
-	
-	public boolean concederEmprestimo(double valor) {
-		if (valor > 0 && valor <= limiteCredito) {
-			this.saldo += valor;
-			return true;
-		}
-		return false;
-	}
-	
-	public Double realizarEmprestimo(double valor, int meses) {
-		if (concederEmprestimo(valor)) {
-			return valor * Math.pow(1.02, meses);
-		}
-		return 0.0;
 	}
 	
 	@Override
@@ -76,6 +61,7 @@ public class ContaCorrente extends Conta {
 	protected boolean concederEmprestimo(double valor, int meses) {
 		return valor <= this.getLimiteEmprestimo();
 	}
+	
 	@Override
 	protected Double taxa(double valor) {
 		return taxaPagamento.tax(valor);

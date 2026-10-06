@@ -1,9 +1,7 @@
 package model.services;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import model.entities.Conta;
@@ -83,36 +81,43 @@ public class ContaService {
 				}
 				break;
 			case 6:
-				Map<String, Double> parcelas = new LinkedHashMap<>();
 				System.out.println("1 - Você quer fazer um emprestimo: ");
 				System.out.print("2 - Você quer consultar as parcelas:\n-> ");
 				int opcaoEmprestimo = scanner.nextInt();
 
-				System.out.println();
 				if (opcaoEmprestimo == 1) {
-					System.out.print("Qual valor do emprestimo: R$ ");
-					double quantia = scanner.nextDouble();
-					System.out.print("Qual o prazo: ");
-					int prazo = scanner.nextInt();
-
-					if (contaCorrente instanceof ContaCorrente cc) {
-						if (cc.concederEmprestimo(quantia)) {
-							System.out.println("Emprestimo de R$ " + String.format("%.2f", quantia) + " aprovado.");
-
-							for (int i = 0; i < prazo; i++) {
-								double valorParcela = cc.realizarEmprestimo(quantia / prazo, (i + 1));
-								parcelas.put((i + 1) + " - parcela", valorParcela);
-							}
-						} else {
-							System.out.println("Emprestimo negado. Valor excede o limite disponível");
+					double quantia;
+					int prazo;
+					
+					do {
+						System.out.print("\nQual valor do emprestimo: R$ ");
+						quantia = scanner.nextDouble();
+						
+						System.out.print("Qual o prazo: ");
+						prazo = scanner.nextInt();
+						
+						if (quantia < 0.0) {
+							System.out.println("\nValor inválido. O valor tem quer ser maior que 0.00");
 						}
-					}
-				} else if (opcaoEmprestimo == 2) {
-					for (String parcela : parcelas.keySet()) {
-						System.out.println(parcela + " - R$ " + String.format("%.2f\n", parcelas.get(parcela)));
-					}
+						
+						if (prazo < 1) {
+							System.out.println("\nPrazo inválido. Tente Novamente!");
+						}
+						
+					} while (quantia < 0.0 || prazo < 1);
+					
+					contaCorrente.realizarEmprestimo(quantia, prazo);
+				}
+				
+				else if (opcaoEmprestimo == 2) {
+					contaCorrente.fluxoParcelas();
+				}
+				
+				else {
+					System.out.println("Essa opção não existe!");
 				}
 				break;
+				
 			case 0:
 				System.out.println("Saindo do sistema...");
 				break loopPrincipal;
