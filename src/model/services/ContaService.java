@@ -80,9 +80,11 @@ public class ContaService {
 
 				if (opcaoTransferencia == 1) {
 					contaCorrente.realizarTransferencia(contaPoupanca, valor);
-				} else if (opcaoTransferencia == 2) {
+				} 
+				else if (opcaoTransferencia == 2) {
 					contaPoupanca.realizarTransferencia(contaCorrente, valor);
-				} else {
+				} 
+				else {
 					System.out.println("Opção errada! Tente Novamente.");
 				}
 				break;
@@ -97,25 +99,11 @@ public class ContaService {
 				int opcaoEmprestimo = scanner.nextInt();
 
 				if (opcaoEmprestimo == 1) {
-					double quantia;
-					int prazo;
+					System.out.print("\nQual valor do emprestimo: R$ ");
+					double quantia = scanner.nextDouble();
 					
-					do {
-						System.out.print("\nQual valor do emprestimo: R$ ");
-						quantia = scanner.nextDouble();
-						
-						System.out.print("Qual o prazo: ");
-						prazo = scanner.nextInt();
-						
-						if (quantia < 0.0) {
-							System.out.println("\nValor inválido. Valor menor que R$ 0.00");
-						}
-						
-						if (prazo < 1) {
-							System.out.println("\nPrazo inválido. Tente Novamente!");
-						}
-						
-					} while (quantia < 0.0 || prazo < 1);
+					System.out.print("Qual o prazo: ");
+					int prazo = scanner.nextInt();
 					
 					contaCorrente.realizarEmprestimo(quantia, prazo);
 				}

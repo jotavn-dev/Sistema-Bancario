@@ -59,7 +59,9 @@ public abstract class Conta {
 	}
 	
 	private void calcularLimiteEmprestimo(int meses) {
-		double limiteEmprestimo = saldo * 0.30 * meses;
+		double trintaPorCento = 0.30;
+		
+		double limiteEmprestimo = saldo * trintaPorCento * meses;
 		
 		this.limiteEmprestimo = limiteEmprestimo;
 	}
@@ -72,7 +74,7 @@ public abstract class Conta {
 			System.out.println("Saque realizado com sucesso!");
 		}
 		else {
-			if (subValor < 0.0) {
+			if (subValor <= 0.0) {
 				System.out.println("Saque negado. O valor é menor que R$ 0.00.");
 			}
 			
@@ -90,7 +92,7 @@ public abstract class Conta {
 			System.out.println("Depósito realizado com sucesso!");
 		}
 		else {
-			if (subValor < 0.0) {
+			if (subValor <= 0.0) {
 				System.out.println("Saque negado. Valor menor que R$ 0.00.");
 			}
 			
@@ -116,7 +118,7 @@ public abstract class Conta {
 	public void realizarEmprestimo(double subValor, int meses) {
 		calcularLimiteEmprestimo(meses);
 
-		if (concederEmprestimo(subValor)) {
+		if (concederEmprestimo(subValor, meses)) {
 			saldo += subValor;
 			double jurosComposto = subValor * Math.pow(1 + taxa(subValor), meses);
 			
@@ -127,6 +129,20 @@ public abstract class Conta {
 			}
 			
 			System.out.println("Emprestimo de R$ " + String.format("%.2f", subValor) + " aprovado.");
+		}
+		else {
+			if (subValor <= 0.0) {
+				System.out.println("Emprestimo negado. Valor menor que R$ 0.00.");
+			}
+			
+			if (meses <= 0) {
+				System.out.println("Emprestimo negado. Prazo inválido.");
+			}
+			
+			else if (subValor > getLimiteEmprestimo()) {
+				System.out.println("Emprestimo negado. Valor ultrapassou seu limite de emprestimo de R$ "
+					+ String.format("%.2f", getLimiteEmprestimo()));
+			}
 		}
 	}
 	
@@ -144,7 +160,7 @@ public abstract class Conta {
 	
 	protected abstract boolean concederTransferencia(double valor);
 	
-	protected abstract boolean concederEmprestimo(double valor);
+	protected abstract boolean concederEmprestimo(double valor, int meses);
 	
 	protected abstract Double taxa(double valor);
 	

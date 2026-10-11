@@ -47,8 +47,8 @@ public class ContaCorrente extends Conta {
 	}
 	
 	@Override
-	protected boolean concederEmprestimo(double valor) {
-		return valor <= this.getLimiteEmprestimo();
+	protected boolean concederEmprestimo(double valor, int meses) {
+		return valor > 0.0 && valor <= this.getLimiteEmprestimo() && meses > 0;
 	}
 	
 	@Override
