@@ -18,7 +18,7 @@ public class Main {
 		LoginService loginService = new LoginService(scanner);
 		ContaService contaService = new ContaService(scanner);
 		
-			loginService.login();
+//			loginService.login();
 			contaService.menu();
 	}
 }

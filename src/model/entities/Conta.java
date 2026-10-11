@@ -15,7 +15,7 @@ public abstract class Conta {
 	
 	private Integer numero;
 	private String agencia;
-	protected double saldo;
+	private double saldo;
 	private double limiteEmprestimo;
 	
 	private List<Object> extratos = new ArrayList<>();
@@ -27,7 +27,7 @@ public abstract class Conta {
 	public Conta(Integer numero, String agencia, Double saldo) {
 		this.numero = numero;
 		this.agencia = agencia;
-		this.saldo = saldo;
+		this.saldo = 1000.0;
 	}
 
 	public Integer getNumero() {
@@ -65,11 +65,20 @@ public abstract class Conta {
 	}
 	
 	public void realizarSaque(double subValor) {
-		Double valorTotal = subValor + taxa(subValor);
-		int hora = LocalDateTime.now().getHour();
+		Double valorTotal = subValor;
 		
 		if (this.concederSaque(valorTotal)) {
 			saldo -= valorTotal;
+			System.out.println("Saque realizado com sucesso!");
+		}
+		else {
+			if (subValor < 0.0) {
+				System.out.println("Saque negado. O valor é menor que R$ 0.00.");
+			}
+			
+			if (subValor > getSaldo()) {
+				System.out.println("Saque negado. Saldo insuficiente!");
+			}		
 		}
 	}
 	

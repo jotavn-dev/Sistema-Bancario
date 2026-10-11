@@ -42,7 +42,7 @@ public class ContaPoupanca extends Conta {
 
 	@Override
 	protected boolean concederSaque(double valor) {
-		return valor <= getSaldo();
+		return valor > 0.0 && valor <= getSaldo();
 	}
 	
 	@Override
@@ -68,11 +68,6 @@ public class ContaPoupanca extends Conta {
 
 		public Builder setAgencia(String agencia) {
 			this.agencia = agencia;
-			return this;
-		}
-
-		public Builder setSaldo(double saldo) {
-			this.saldo = saldo;
 			return this;
 		}
 

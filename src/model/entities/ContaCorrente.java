@@ -6,22 +6,11 @@ import model.services.TaxaPagamento;
 
 public class ContaCorrente extends Conta {
 	
-	private double limiteCredito;
-	
 	private TaxaPagamento taxaPagamento;
 	
-	private ContaCorrente(Integer numero, String agencia, Double saldo, double limiteCredito, TaxaPagamento taxaPagamento) {
+	private ContaCorrente(Integer numero, String agencia, Double saldo, TaxaPagamento taxaPagamento) {
 		super(numero, agencia, saldo);
-		this.limiteCredito = limiteCredito;
 		this.taxaPagamento = taxaPagamento;
-	}
-
-	public double getLimiteCredito() {
-		return limiteCredito;
-	}
-
-	public void setLimiteCredito(double limiteCredito) {
-		this.limiteCredito = limiteCredito;
 	}
 	
 	@Override
@@ -54,7 +43,7 @@ public class ContaCorrente extends Conta {
 	
 	@Override
 	protected boolean concederSaque(double valor) {
-		return valor <= getSaldo() + getLimiteCredito();
+		return valor > 0.0 && valor <= getSaldo();
 	}
 	
 	@Override
@@ -71,7 +60,6 @@ public class ContaCorrente extends Conta {
 		private Integer numero;
 		private String agencia;
 		private double saldo;
-		private double limiteCredito;
 		private TaxaPagamento taxaPagamento;
 		
 		public Builder setNumero(Integer numero) {
@@ -84,29 +72,18 @@ public class ContaCorrente extends Conta {
 			return this;
 		}
 		
-		public Builder setSaldo(double saldo) {
-			this.saldo = saldo;
-			return this;
-		}
-		
-		public Builder setLimiteCredito(double limiteCredito) {
-			this.limiteCredito = limiteCredito;
-			return this;
-		}
-		
 		public Builder setTaxaPagamento(TaxaPagamento taxaPagamento) {
 			this.taxaPagamento = taxaPagamento;
 			return this;
 		}
 		
 		public ContaCorrente build() {
-			return new ContaCorrente(numero, agencia, saldo, limiteCredito, taxaPagamento);
+			return new ContaCorrente(numero, agencia, saldo, taxaPagamento);
 		}
 	}
 	
 	@Override
 	public String toString() {
-		return super.toString() +
-				"\nLimiteCredito: " + limiteCredito;
+		return super.toString();
 	}
 }

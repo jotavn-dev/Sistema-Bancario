@@ -18,13 +18,11 @@ public class ContaService {
 
 	public Conta contaCorrente = new ContaCorrente.Builder()
 			.setNumero(1001).setAgencia("0002-4")
-			.setSaldo(1000.0).setLimiteCredito(2000.0)
 			.setTaxaPagamento(new TaxaPagamentoBrasil())
 			.build();
 
 	public Conta contaPoupanca = new ContaPoupanca.Builder()
 			.setNumero(1003).setAgencia("0234-1")
-			.setSaldo(500.0)
 			.setTaxaPagamento(new TaxaPagamentoBrasil())
 			.build();
 
@@ -55,7 +53,7 @@ public class ContaService {
 				contaCorrente.realizarDeposito(scanner.nextDouble());
 				break;
 			case 3:
-				System.out.println("Qual valor do saque: R$ ");
+				System.out.print("Qual valor do saque: R$ ");
 				contaCorrente.realizarSaque(scanner.nextDouble());
 				break;
 			case 4:
