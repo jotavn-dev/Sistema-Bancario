@@ -1,5 +1,6 @@
 package model.entities;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +66,7 @@ public abstract class Conta {
 	
 	public void realizarSaque(double subValor) {
 		Double valorTotal = subValor + taxa(subValor);
+		int hora = LocalDateTime.now().getHour();
 		
 		if (this.concederSaque(valorTotal)) {
 			saldo -= valorTotal;
@@ -72,8 +74,24 @@ public abstract class Conta {
 	}
 	
 	public void realizarDeposito(double subValor) {
+		int hora = LocalDateTime.now().getHour();
+		
 		if (this.concederDeposito(subValor)) {
 			saldo += subValor;
+			System.out.println("Depósito realizado com sucesso!");
+		}
+		else {
+			if (subValor < 0.0) {
+				System.out.println("Saque negado. O valor deve ser maior que R$ 0.00.");
+			}
+			
+			if (hora < HORA_INICIO_NOTURNO && subValor > LIMITE_DEPOSITO_DIURNO) {
+				System.out.println("Saque negado. O valor ultrapassou o limite diuno padrão de R$ 10000.00.");
+			}
+			
+			if (hora >= HORA_INICIO_NOTURNO && subValor > LIMITE_DEPOSITO_NORTUNO) {
+				System.out.println("Saque negado. O valor ultrapassou o limte nortuno padrão de R$ 1000.00.");
+			}
 		}
 	}
 	
@@ -91,9 +109,7 @@ public abstract class Conta {
 
 		if (concederEmprestimo(subValor, meses)) {
 			saldo += subValor;
-			
-			double jurosComposto = subValor * 
-					Math.pow(1 + taxa(subValor), meses);
+			double jurosComposto = subValor * Math.pow(1 + taxa(subValor), meses);
 			
 			double parcelas = jurosComposto / meses;
 			
