@@ -46,7 +46,7 @@ public class ContaPoupanca extends Conta {
 	}
 	
 	@Override
-	protected boolean concederEmprestimo(double valor, int meses) {
+	protected boolean concederEmprestimo(double valor) {
 		return valor <= this.getLimiteEmprestimo();
 	}
 

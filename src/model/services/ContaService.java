@@ -95,7 +95,7 @@ public class ContaService {
 						prazo = scanner.nextInt();
 						
 						if (quantia < 0.0) {
-							System.out.println("\nValor inválido. O valor tem quer ser maior que R$ 0.00");
+							System.out.println("\nValor inválido. Valor menor que R$ 0.00");
 						}
 						
 						if (prazo < 1) {

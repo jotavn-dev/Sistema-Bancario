@@ -116,7 +116,7 @@ public abstract class Conta {
 	public void realizarEmprestimo(double subValor, int meses) {
 		calcularLimiteEmprestimo(meses);
 
-		if (concederEmprestimo(subValor, meses)) {
+		if (concederEmprestimo(subValor)) {
 			saldo += subValor;
 			double jurosComposto = subValor * Math.pow(1 + taxa(subValor), meses);
 			
@@ -127,15 +127,6 @@ public abstract class Conta {
 			}
 			
 			System.out.println("Emprestimo de R$ " + String.format("%.2f", subValor) + " aprovado.");
-		}
-		else {
-			if (subValor < 0.0) {
-				System.out.println("Emprestimo negado. O valor deve ser maior que R$ 0.00.");
-			}
-			
-			if (subValor > limiteEmprestimo) {
-				System.out.println("Emprestimo negado. O valor excede o seu limite de emprestimo.");
-			}
 		}
 	}
 	
@@ -153,7 +144,7 @@ public abstract class Conta {
 	
 	protected abstract boolean concederTransferencia(double valor);
 	
-	protected abstract boolean concederEmprestimo(double valor, int meses);
+	protected abstract boolean concederEmprestimo(double valor);
 	
 	protected abstract Double taxa(double valor);
 	
