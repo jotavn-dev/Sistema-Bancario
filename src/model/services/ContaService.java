@@ -46,7 +46,20 @@ public class ContaService {
 			switch (opcao) {
 
 			case 1:
-				System.out.println("\nSaldo: R$ " + String.format("%.2f", contaCorrente.getSaldo()));
+				System.out.println("Você qual conta você quer consultar o saldo:");
+				System.out.println("   1 - Conta Poupança:");
+				System.out.print("   2 - Conta Corrente:\n-> ");
+				int opcaoSaldo = scanner.nextInt();
+				
+				if (opcaoSaldo == 1) {
+					System.out.println("\nSaldo: R$ " + String.format("%.2f", contaPoupanca.getSaldo()));
+				}
+				else if (opcaoSaldo == 2) {
+					System.out.println("\nSaldo: R$ " + String.format("%.2f", contaCorrente.getSaldo()));
+				}
+				else {
+					System.out.println("Opcão inválida. Tente Novamente!");
+				}
 				break;
 			case 2:
 				System.out.print("Qual valor do deposito: R$ ");

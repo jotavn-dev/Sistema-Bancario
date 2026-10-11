@@ -91,15 +91,15 @@ public abstract class Conta {
 		}
 		else {
 			if (subValor < 0.0) {
-				System.out.println("Saque negado. O valor deve ser maior que R$ 0.00.");
+				System.out.println("Saque negado. Valor menor que R$ 0.00.");
 			}
 			
 			if (hora < HORA_INICIO_NOTURNO && subValor > LIMITE_DEPOSITO_DIURNO) {
-				System.out.println("Saque negado. O valor ultrapassou o limite diuno padrão de R$ 10000.00.");
+				System.out.println("Saque negado. O valor ultrapassou o limite diuno padrão de R$ " + LIMITE_DEPOSITO_DIURNO);
 			}
 			
 			if (hora >= HORA_INICIO_NOTURNO && subValor > LIMITE_DEPOSITO_NORTUNO) {
-				System.out.println("Saque negado. O valor ultrapassou o limte nortuno padrão de R$ 1000.00.");
+				System.out.println("Saque negado. O valor ultrapassou o limte nortuno padrão de R$ " + LIMITE_DEPOSITO_NORTUNO);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ public abstract class Conta {
 		
 		if (concederTransferencia(valorTotal)) {
 			this.realizarSaque(valorTotal);
-			conta.realizarDeposito(valorTotal);
+			conta.realizarDeposito(valor);
 		}
 	}
 	
