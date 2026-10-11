@@ -70,23 +70,12 @@ public class ContaService {
 				contaCorrente.realizarSaque(scanner.nextDouble());
 				break;
 			case 4:
-				System.out.println("Em qual conta você quer transferir seu dinheiro:");
-				System.out.println("   1 - Conta Poupanca:");
-				System.out.print("   2 - Conta Corrente:\n-> ");
-				int opcaoTransferencia = scanner.nextInt();
+				System.out.println("Seu dinheiro vai ser transferido para a poupanca:");
 
 				System.out.print("Digite o valor: ");
 				double valor = scanner.nextDouble();
-
-				if (opcaoTransferencia == 1) {
-					contaCorrente.realizarTransferencia(contaPoupanca, valor);
-				} 
-				else if (opcaoTransferencia == 2) {
-					contaPoupanca.realizarTransferencia(contaCorrente, valor);
-				} 
-				else {
-					System.out.println("Opção errada! Tente Novamente.");
-				}
+				
+				contaCorrente.realizarTransferencia(contaPoupanca, valor);
 				break;
 			case 5:
 				for (Object ext : contaCorrente.getExtratos()) {

@@ -27,7 +27,7 @@ public abstract class Conta {
 	public Conta(Integer numero, String agencia, Double saldo) {
 		this.numero = numero;
 		this.agencia = agencia;
-		this.saldo = 1000.0;
+		this.saldo = 100000.0;
 	}
 
 	public Integer getNumero() {
@@ -107,11 +107,20 @@ public abstract class Conta {
 	}
 	
 	public void realizarTransferencia(Conta conta, double valor) {
-		Double valorTotal = valor += valor * taxa(valor);
+		Double valorTotal = valor + valor * taxa(valor);
 		
 		if (concederTransferencia(valorTotal)) {
-			this.realizarSaque(valorTotal);
-			conta.realizarDeposito(valor);
+			this.creditar(valorTotal);
+			conta.debitar(valor);
+		}
+		else {
+			if (valor <= 0.0) {
+				System.out.println("Transferência negada. Valor menor que R$ 0.00");
+			}
+			
+			if (valor > saldo) {
+				System.out.println("Transferência negada. Saldo insuficiente.");
+			}
 		}
 	}
 	
@@ -144,6 +153,14 @@ public abstract class Conta {
 					+ String.format("%.2f", getLimiteEmprestimo()));
 			}
 		}
+	}
+	
+	private void creditar(double valor) {
+		saldo += valor;
+	}
+	
+	private void debitar(double valor) {
+		saldo -= valor;
 	}
 	
 	public void fluxoParcelas() {

@@ -22,7 +22,7 @@ public class ContaPoupanca extends Conta {
 
 	@Override
 	protected boolean concederTransferencia(double valor) {
-		return this.concederSaque(valor) && this.concederDeposito(valor);
+		return this.concederSaque(valor);
 	}
 
 	@Override
