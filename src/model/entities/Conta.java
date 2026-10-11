@@ -66,52 +66,50 @@ public abstract class Conta {
 		this.limiteEmprestimo = limiteEmprestimo;
 	}
 	
-	public void realizarSaque(double subValor) {
-		Double valorTotal = subValor;
+	public void realizarSaque(double valor) {
 		
-		if (this.concederSaque(valorTotal)) {
-			saldo -= valorTotal;
+		if (this.concederSaque(valor)) {
+			saldo -= valor;
 			System.out.println("Saque realizado com sucesso!");
 		}
 		else {
-			if (subValor <= 0.0) {
+			if (valor <= 0.0) {
 				System.out.println("Saque negado. O valor é menor que R$ 0.00.");
 			}
 			
-			if (subValor > getSaldo()) {
+			if (valor > getSaldo()) {
 				System.out.println("Saque negado. Saldo insuficiente!");
 			}		
 		}
 	}
 	
-	public void realizarDeposito(double subValor) {
+	public void realizarDeposito(double valor) {
 		int hora = LocalDateTime.now().getHour();
 		
-		if (this.concederDeposito(subValor)) {
-			saldo += subValor;
+		if (this.concederDeposito(valor)) {
+			saldo += valor;
 			System.out.println("Depósito realizado com sucesso!");
 		}
 		else {
-			if (subValor <= 0.0) {
+			if (valor <= 0.0) {
 				System.out.println("Saque negado. Valor menor que R$ 0.00.");
 			}
 			
-			if (hora < HORA_INICIO_NOTURNO && subValor > LIMITE_DEPOSITO_DIURNO) {
+			if (hora < HORA_INICIO_NOTURNO && valor > LIMITE_DEPOSITO_DIURNO) {
 				System.out.println("Saque negado. O valor ultrapassou o limite diuno padrão de R$ " + LIMITE_DEPOSITO_DIURNO);
 			}
 			
-			if (hora >= HORA_INICIO_NOTURNO && subValor > LIMITE_DEPOSITO_NORTUNO) {
+			if (hora >= HORA_INICIO_NOTURNO && valor > LIMITE_DEPOSITO_NORTUNO) {
 				System.out.println("Saque negado. O valor ultrapassou o limte nortuno padrão de R$ " + LIMITE_DEPOSITO_NORTUNO);
 			}
 		}
 	}
 	
 	public void realizarTransferencia(Conta conta, double valor) {
-		Double valorTotal = valor + valor * taxa(valor);
-		
-		if (concederTransferencia(valorTotal)) {
-			this.creditar(valorTotal);
-			conta.debitar(valor);
+		if (concederTransferencia(valor)) {
+			this.debitar(valor);
+			conta.creditar(valor);
+			
 		}
 		else {
 			if (valor <= 0.0) {

@@ -22,7 +22,7 @@ public class ContaCorrente extends Conta {
 	
 	@Override
 	protected boolean concederTransferencia(double valor) {
-		return this.concederSaque(valor) && this.concederDeposito(valor);
+		return valor > 0.0 && valor <= this.getSaldo();
 	}
 	
 	@Override
