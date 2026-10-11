@@ -21,16 +21,10 @@ public class ContaPoupanca extends Conta {
 	}
 
 	@Override
-	protected boolean concederTransferencia(double valor) {
-		return this.concederSaque(valor);
-	}
-
-	@Override
 	protected boolean concederDeposito(double valor) {
 		int hora = LocalDateTime.now().getHour();
 
 		Double limiteDeposito;
-
 		if (hora >= HORA_INICIO_NOTURNO) {
 			limiteDeposito = LIMITE_DEPOSITO_NORTUNO;
 		} else {
@@ -48,6 +42,11 @@ public class ContaPoupanca extends Conta {
 	@Override
 	protected boolean concederEmprestimo(double valor, int meses) {
 		return valor > 0.0 && valor <= this.getLimiteEmprestimo() && meses > 0;
+	}
+	
+	@Override
+	protected boolean concederTransferencia(double valor) {
+		return valor > 0.0 && valor <= this.getSaldo();
 	}
 
 	@Override

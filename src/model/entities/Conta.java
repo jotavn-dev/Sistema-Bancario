@@ -105,23 +105,6 @@ public abstract class Conta {
 		}
 	}
 	
-	public void realizarTransferencia(Conta conta, double valor) {
-		if (concederTransferencia(valor)) {
-			this.debitar(valor);
-			conta.creditar(valor);
-			System.out.println("Transferência realizada com sucesso!");
-		}
-		else {
-			if (valor <= 0.0) {
-				System.out.println("Transferência negada. Valor menor que R$ 0.00");
-			}
-			
-			if (valor > saldo) {
-				System.out.println("Transferência negada. Saldo insuficiente.");
-			}
-		}
-	}
-	
 	public void realizarEmprestimo(double subValor, int meses) {
 		calcularLimiteEmprestimo(meses);
 
@@ -153,6 +136,23 @@ public abstract class Conta {
 		}
 	}
 	
+	public void realizarTransferencia(Conta conta, double valor) {
+		if (concederTransferencia(valor)) {
+			this.debitar(valor);
+			conta.creditar(valor);
+			System.out.println("Transferência realizada com sucesso!");
+		}
+		else {
+			if (valor <= 0.0) {
+				System.out.println("Transferência negada. Valor menor que R$ 0.00");
+			}
+			
+			if (valor > saldo) {
+				System.out.println("Transferência negada. Saldo insuficiente.");
+			}
+		}
+	}
+	
 	private void creditar(double valor) {
 		saldo += valor;
 	}
@@ -173,9 +173,9 @@ public abstract class Conta {
 	
 	protected abstract boolean concederSaque(double valor);
 	
-	protected abstract boolean concederTransferencia(double valor);
-	
 	protected abstract boolean concederEmprestimo(double valor, int meses);
+	
+	protected abstract boolean concederTransferencia(double valor);
 	
 	protected abstract Double taxa(double valor);
 	

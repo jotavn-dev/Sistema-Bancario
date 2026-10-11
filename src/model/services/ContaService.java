@@ -28,8 +28,8 @@ public class ContaService {
 
 	public void menu() {
 
-		List<String> menu = Arrays.asList("Consultar saldo", "Depositar", "Sacar", "Transferir", "Extrato",
-				"Emprestimo");
+		List<String> menu = Arrays.asList("Consultar saldo", "Depositar", "Sacar", "Transferir", "Emprestimo",
+				"Extrato");
 
 		loopPrincipal:
 		while (true) {
@@ -46,7 +46,7 @@ public class ContaService {
 			switch (opcao) {
 
 			case 1:
-				System.out.println("Você qual conta você quer consultar o saldo:");
+				System.out.println("\nVocê qual conta você quer consultar o saldo:");
 				System.out.println("   1 - Conta Poupança:");
 				System.out.print("   2 - Conta Corrente:\n-> ");
 				int opcaoSaldo = scanner.nextInt();
@@ -62,28 +62,23 @@ public class ContaService {
 				}
 				break;
 			case 2:
-				System.out.print("Qual valor do deposito: R$ ");
+				System.out.print("\nQual valor do deposito: R$ ");
 				contaCorrente.realizarDeposito(scanner.nextDouble());
 				break;
 			case 3:
-				System.out.print("Qual valor do saque: R$ ");
+				System.out.print("\nQual valor do saque: R$ ");
 				contaCorrente.realizarSaque(scanner.nextDouble());
 				break;
 			case 4:
-				System.out.println("Seu dinheiro vai ser transferido para a poupanca:");
-
-				System.out.print("Digite o valor: ");
+				System.out.print("\nDigite o valor: ");
 				double valor = scanner.nextDouble();
+				
+				System.out.println("Seu dinheiro vai ser transferido para a poupanca:");
 				
 				contaCorrente.realizarTransferencia(contaPoupanca, valor);
 				break;
 			case 5:
-				for (Object ext : contaCorrente.getExtratos()) {
-					System.out.println(ext);
-				}
-				break;
-			case 6:
-				System.out.println("1 - Você quer fazer um emprestimo: ");
+				System.out.println("\n1 - Você quer fazer um emprestimo: ");
 				System.out.print("2 - Você quer consultar as parcelas:\n-> ");
 				int opcaoEmprestimo = scanner.nextInt();
 
@@ -103,6 +98,12 @@ public class ContaService {
 				
 				else {
 					System.out.println("Essa opção não existe!");
+				}
+				break;
+				
+			case 6:
+				for (Object ext : contaCorrente.getExtratos()) {
+					System.out.println(ext);
 				}
 				break;
 				
