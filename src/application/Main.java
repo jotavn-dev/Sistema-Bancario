@@ -3,8 +3,7 @@ package application;
 import java.util.Locale;
 import java.util.Scanner;
 
-import model.entities.Conta;
-import model.entities.ContaCorrente;
+import model.entities.Cliente;
 import model.services.ContaService;
 import model.services.LoginService;
 
@@ -16,9 +15,10 @@ public class Main {
 		Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
 		
 		LoginService loginService = new LoginService(scanner);
-		ContaService contaService = new ContaService(scanner);
+		Cliente clienteAutenticado = loginService.login();
 		
-//			loginService.login();
+		ContaService contaService = new ContaService(scanner, clienteAutenticado);
+
 			contaService.menu();
 	}
 }

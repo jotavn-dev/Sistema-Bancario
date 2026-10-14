@@ -8,16 +8,9 @@ public class ContaPoupanca extends Conta {
 
 	private TaxaPagamento taxaPagamento;
 
-	private ContaPoupanca(Integer numero, String agencia, Double saldo, TaxaPagamento taxaPagamento) {
-		super(numero, agencia, saldo);
+	private ContaPoupanca(Integer numero, String agencia, Double saldo, Cliente cliente, TaxaPagamento taxaPagamento) {
+		super(numero, agencia, saldo, cliente);
 		this.taxaPagamento = taxaPagamento;
-	}
-
-	@Override
-	public void addExtrato(Conta conta, Cliente cliente) {
-		this.getExtratos().add(conta.getNumero());
-		this.getExtratos().add(cliente.getName());
-		this.getExtratos().add(cliente.getCpf());
 	}
 
 	@Override
@@ -58,6 +51,7 @@ public class ContaPoupanca extends Conta {
 		private Integer numero;
 		private String agencia;
 		private double saldo;
+		private Cliente cliente;
 		private TaxaPagamento taxaPagamento;
 
 		public Builder setNumero(Integer numero) {
@@ -69,6 +63,11 @@ public class ContaPoupanca extends Conta {
 			this.agencia = agencia;
 			return this;
 		}
+		
+		public Builder setCliente(Cliente cliente) {
+			this.cliente = cliente;
+			return this;
+		}
 
 		public Builder setTaxaPagamento(TaxaPagamento taxaPagamento) {
 			this.taxaPagamento = taxaPagamento;
@@ -76,7 +75,7 @@ public class ContaPoupanca extends Conta {
 		}
 
 		public ContaPoupanca build() {
-			return new ContaPoupanca(numero, agencia, saldo, taxaPagamento);
+			return new ContaPoupanca(numero, agencia, saldo, cliente, taxaPagamento);
 		}
 	}
 

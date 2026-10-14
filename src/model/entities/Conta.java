@@ -1,7 +1,6 @@
 package model.entities;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,49 +12,54 @@ public abstract class Conta {
 	protected final double LIMITE_DEPOSITO_DIURNO = 10000.0;
 	protected final double LIMITE_DEPOSITO_NORTUNO = 1000.0;
 	
-	private Integer numero;
+	private Integer numeroConta;
 	private String agencia;
 	private double saldo;
 	private double limiteEmprestimo;
 	
-	private List<Object> extratos = new ArrayList<>();
+	private Cliente cliente;
+	
+	private List<Transacao> consultarExtratos = new ArrayList<>();
 	
 	private Map<String, String> fluxoParcelas = new HashMap<>();
-	
-	protected DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-	public Conta(Integer numero, String agencia, Double saldo) {
-		this.numero = numero;
+	public Conta(Integer numeroConta, String agencia, Double saldo, Cliente cliente) {
+		this.numeroConta = numeroConta;
 		this.agencia = agencia;
 		this.saldo = 100000.0;
+		this.cliente = cliente;
 	}
 
-	public Integer getNumero() {
-		return numero;
-	}
-
-	public void setNumero(Integer numero) {
-		this.numero = numero;
+	public Integer getNumeroConta() {
+		return numeroConta;
 	}
 
 	public String getAgencia() {
 		return agencia;
 	}
 
-	public void setAgencia(String agencia) {
-		this.agencia = agencia;
-	}
-
 	public Double getSaldo() {
 		return saldo;
 	}
-
-	public List<Object> getExtratos() {
-		return extratos;
+	
+	public Cliente getCliente() {
+		return cliente;
 	}
 
-	public void setExtratos(List<Object> extratos) {
-		this.extratos = extratos;
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+	
+	public List<Transacao> getConsultarExtratos() {
+		return consultarExtratos;
+	}
+	
+	public Map<String, String> getFluxoParcelas() {
+		return fluxoParcelas;
+	}
+	
+	public double getLimiteEmprestimo() {
+		return limiteEmprestimo;
 	}
 	
 	private void calcularLimiteEmprestimo(int meses) {
@@ -70,7 +74,14 @@ public abstract class Conta {
 		
 		if (this.concederSaque(valor)) {
 			saldo -= valor;
-			System.out.println("Saque realizado com sucesso!");
+			System.out.println("Saque realizado com sucesso!\n");
+			consultarExtratos.add(new Transacao.Builder()
+					.setNumeroConta(this.numeroConta)
+					.setCliente(this.cliente)
+					.setData(LocalDateTime.now())
+					.setOperacao("Saque")
+					.setValor(valor)
+					.build());
 		}
 		else {
 			if (valor <= 0.0) {
@@ -88,7 +99,14 @@ public abstract class Conta {
 		
 		if (this.concederDeposito(valor)) {
 			saldo += valor;
-			System.out.println("Depósito realizado com sucesso!");
+			System.out.println("Depósito realizado com sucesso!\n");
+			consultarExtratos.add(new Transacao.Builder()
+					.setNumeroConta(this.numeroConta)
+					.setCliente(cliente)
+					.setData(LocalDateTime.now())
+					.setOperacao("Deposito")
+					.setValor(valor)
+					.build());
 		}
 		else {
 			if (valor <= 0.0) {
@@ -111,14 +129,21 @@ public abstract class Conta {
 		if (concederEmprestimo(subValor, meses)) {
 			saldo += subValor;
 			double jurosComposto = subValor * Math.pow(1 + taxa(subValor), meses);
-			
 			double parcelas = jurosComposto / meses;
 			
 			for (int data = 1; data <= meses; data++) {
 				fluxoParcelas.put(data + " - parcela", String.format("R$ %.2f", parcelas));
 			}
 			
-			System.out.println("Emprestimo de R$ " + String.format("%.2f", subValor) + " aprovado.");
+			System.out.println("Emprestimo de R$ " + String.format("%.2f", subValor) + " aprovado.\n");
+			
+			consultarExtratos.add(new Transacao.Builder()
+					.setNumeroConta(this.numeroConta)
+					.setCliente(cliente)
+					.setData(LocalDateTime.now())
+					.setOperacao("Emprestimo")
+					.setValor(subValor)
+					.build());
 		}
 		else {
 			if (subValor <= 0.0) {
@@ -140,7 +165,15 @@ public abstract class Conta {
 		if (concederTransferencia(valor)) {
 			this.debitar(valor);
 			conta.creditar(valor);
-			System.out.println("Transferência realizada com sucesso!");
+			System.out.println("Transferência realizada com sucesso!\n");
+			
+			consultarExtratos.add(new Transacao.Builder()
+					.setNumeroConta(this.numeroConta)
+					.setCliente(cliente)
+					.setData(LocalDateTime.now())
+					.setOperacao("Transferência")
+					.setValor(valor)
+					.build());
 		}
 		else {
 			if (valor <= 0.0) {
@@ -166,8 +199,6 @@ public abstract class Conta {
 			System.out.println(consulta + " - " + this.getFluxoParcelas().get(consulta));
 		}
 	}
-
-	public abstract void addExtrato(Conta conta, Cliente cliente);
 	
 	protected abstract boolean concederDeposito(double valor);
 	
@@ -181,16 +212,8 @@ public abstract class Conta {
 	
 	@Override
 	public String toString() {
-		return "Titular: " + numero +
+		return "Titular: " + numeroConta +
 				"\nAgencia: " + agencia +
 				"\nSaldo: " + saldo;
-	}
-
-	public Map<String, String> getFluxoParcelas() {
-		return fluxoParcelas;
-	}
-	
-	public double getLimiteEmprestimo() {
-		return limiteEmprestimo;
 	}
 }

@@ -10,15 +10,21 @@ public class LoginService {
 	
 	private Scanner scanner;
 	
+	private Cliente cliente;
+	
 	public LoginService(Scanner scanner) {
 		this.scanner = scanner;
 	}
 	
-	public void login() {
+	public Cliente login() {
+		
+		String name = null;
+		Long cpf = null;
+		
 		String linha = "=".repeat(15);
 		System.out.println(linha + " Login " + linha + "\n");
 		System.out.print("Nome completo:\n-> ");
-		String name = scanner.nextLine();
+		name = scanner.nextLine();
 
 		while (Validacoes.identificarRegex(name)) {
 			System.out.println("Digite somente letras!");
@@ -28,7 +34,7 @@ public class LoginService {
 
 			try {
 				System.out.print("\nDigite seu CPF (11 dígitos, sem potuações):\n-> ");
-				Long cpf = scanner.nextLong();
+				cpf = scanner.nextLong();
 				
 				while (String.valueOf(cpf).length() != 11) {
 					System.out.println("\nErro: o cpf deve ter exatamente 11 dígitos");
@@ -37,8 +43,8 @@ public class LoginService {
 				}
 				
 				String cpfFormatado = Validacoes.formatadorCpf(cpf);
-				Cliente cliente = new Cliente(name, cpfFormatado);
-				
+				cliente = new Cliente(name, cpfFormatado);
+
 			} 
 			catch (InputMismatchException e) {
 				System.out.println("\nErro: Digite apenas número");
@@ -46,9 +52,10 @@ public class LoginService {
 			}
 		
 		System.out.print("\nDigite sua senha:\n-> ");
-		int senha = scanner.nextInt();
+		scanner.nextInt();
 		
-		System.out.println("\n" + "=".repeat(37) + "\n");
+		System.out.println("\n" + "=".repeat(37));
 		
+		return cliente;
 	}
 }

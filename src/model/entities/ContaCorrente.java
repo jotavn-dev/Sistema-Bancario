@@ -8,16 +8,9 @@ public class ContaCorrente extends Conta {
 	
 	private TaxaPagamento taxaPagamento;
 	
-	private ContaCorrente(Integer numero, String agencia, Double saldo, TaxaPagamento taxaPagamento) {
-		super(numero, agencia, saldo);
+	private ContaCorrente(Integer numero, String agencia, Double saldo, Cliente cliente, TaxaPagamento taxaPagamento) {
+		super(numero, agencia, saldo, cliente);
 		this.taxaPagamento = taxaPagamento;
-	}
-	
-	@Override
-	public void addExtrato(Conta conta, Cliente cliente) {
-		this.getExtratos().add(conta.getNumero());
-		this.getExtratos().add(cliente.getName());
-		this.getExtratos().add(cliente.getCpf());
 	}
 	
 	@Override
@@ -60,6 +53,7 @@ public class ContaCorrente extends Conta {
 		private Integer numero;
 		private String agencia;
 		private double saldo;
+		private Cliente cliente;
 		private TaxaPagamento taxaPagamento;
 		
 		public Builder setNumero(Integer numero) {
@@ -72,13 +66,18 @@ public class ContaCorrente extends Conta {
 			return this;
 		}
 		
+		public Builder setCliente(Cliente cliente) {
+			this.cliente = cliente;
+			return this;
+		}
+		
 		public Builder setTaxaPagamento(TaxaPagamento taxaPagamento) {
 			this.taxaPagamento = taxaPagamento;
 			return this;
 		}
 		
 		public ContaCorrente build() {
-			return new ContaCorrente(numero, agencia, saldo, taxaPagamento);
+			return new ContaCorrente(numero, agencia, saldo, cliente, taxaPagamento);
 		}
 	}
 	

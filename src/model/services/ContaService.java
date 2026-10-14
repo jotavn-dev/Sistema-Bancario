@@ -1,42 +1,57 @@
 package model.services;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import model.entities.Cliente;
 import model.entities.Conta;
 import model.entities.ContaCorrente;
 import model.entities.ContaPoupanca;
+import model.entities.Transacao;
 
 public class ContaService {
 
 	private Scanner scanner;
 	
-	public ContaService(Scanner scanner) {
-		this.scanner = scanner;
-	}
-
-	public Conta contaCorrente = new ContaCorrente.Builder()
+	private Cliente cliente;
+	
+	private Conta contaCorrente = new ContaCorrente.Builder()
 			.setNumero(1001).setAgencia("0002-4")
 			.setTaxaPagamento(new TaxaPagamentoBrasil())
 			.build();
 
-	public Conta contaPoupanca = new ContaPoupanca.Builder()
+	private Conta contaPoupanca = new ContaPoupanca.Builder()
 			.setNumero(1003).setAgencia("0234-1")
 			.setTaxaPagamento(new TaxaPagamentoBrasil())
 			.build();
+	
+	private DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+	
+	public ContaService(Scanner scanner, Cliente cliente) {
+		this.scanner = scanner;
+		this.cliente = cliente;
+		
+		this.contaCorrente.setCliente(cliente);
+		this.contaPoupanca.setCliente(cliente);
+	}
+	
+	public Cliente getCliente() {
+		return cliente;
+	}
 
 	public void menu() {
 
-		List<String> menu = Arrays.asList("Consultar saldo", "Depositar", "Sacar", "Transferir", "Emprestimo",
+		List<String> listMenu = Arrays.asList("Consultar saldo", "Depositar", "Sacar", "Transferir", "Emprestimo",
 				"Extrato");
 
 		loopPrincipal:
 		while (true) {
-			System.out.println("=".repeat(16) + " MENU " + "=".repeat(15) + "\n");
+			System.out.println("\n" + "=".repeat(16) + " MENU " + "=".repeat(15) + "\n");
 
-			for (int i = 0; i < menu.size(); i++) {
-				System.out.println((i + 1) + " - " + menu.get(i));
+			for (int menu = 0; menu < listMenu.size(); menu++) {
+				System.out.println((menu + 1) + " - " + listMenu.get(menu));
 			}
 			System.out.println("0 - Sair");
 
@@ -102,8 +117,20 @@ public class ContaService {
 				break;
 				
 			case 6:
-				for (Object ext : contaCorrente.getExtratos()) {
-					System.out.println(ext);
+				if (contaCorrente.getConsultarExtratos().isEmpty()) {
+					System.out.println("Você não executou nenhuma operação!");
+				}
+				else {
+					
+					for (Transacao extrato : contaCorrente.getConsultarExtratos()) {
+						System.out.println("\nNumero da conta: " + extrato.getNumeroConta());
+						System.out.println("Nome: " + extrato.getCliente().getName());
+						System.out.println("Cpf: " + extrato.getCliente().getCpf());
+						System.out.println("Data: " + fm1.format(extrato.getData()));
+						System.out.println("\nOperação: " + extrato.getOperacao());
+						System.out.println("R$ " + String.format("%.2f", 
+								extrato.getValor()) + "\n");
+					}
 				}
 				break;
 				
