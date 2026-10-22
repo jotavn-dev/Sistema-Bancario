@@ -8,8 +8,16 @@ public class ContaPoupanca extends Conta {
 
 	private TaxaPagamento taxaPagamento;
 
-	private ContaPoupanca(Integer numero, String agencia, Double saldo, Cliente cliente, TaxaPagamento taxaPagamento) {
-		super(numero, agencia, saldo, cliente);
+	private ContaPoupanca(Integer numero, String agencia, Double saldo, Cliente clienteLogado, TaxaPagamento taxaPagamento) {
+		super(numero, agencia, saldo, clienteLogado);
+		this.taxaPagamento = taxaPagamento;
+	}
+	
+	public TaxaPagamento getTaxaPagamento() {
+		return taxaPagamento;
+	}
+
+	public void setTaxaPagamento(TaxaPagamento taxaPagamento) {
 		this.taxaPagamento = taxaPagamento;
 	}
 
@@ -51,7 +59,7 @@ public class ContaPoupanca extends Conta {
 		private Integer numero;
 		private String agencia;
 		private double saldo;
-		private Cliente cliente;
+		private Cliente clienteLogado;
 		private TaxaPagamento taxaPagamento;
 
 		public Builder setNumero(Integer numero) {
@@ -64,8 +72,8 @@ public class ContaPoupanca extends Conta {
 			return this;
 		}
 		
-		public Builder setCliente(Cliente cliente) {
-			this.cliente = cliente;
+		public Builder setCliente(Cliente clienteLogado) {
+			this.clienteLogado = clienteLogado;
 			return this;
 		}
 
@@ -75,20 +83,12 @@ public class ContaPoupanca extends Conta {
 		}
 
 		public ContaPoupanca build() {
-			return new ContaPoupanca(numero, agencia, saldo, cliente, taxaPagamento);
+			return new ContaPoupanca(numero, agencia, saldo, clienteLogado, taxaPagamento);
 		}
 	}
 
 	@Override
 	public String toString() {
 		return super.toString();
-	}
-
-	public TaxaPagamento getTaxaPagamento() {
-		return taxaPagamento;
-	}
-
-	public void setTaxaPagamento(TaxaPagamento taxaPagamento) {
-		this.taxaPagamento = taxaPagamento;
 	}
 }

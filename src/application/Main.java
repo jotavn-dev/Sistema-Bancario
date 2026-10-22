@@ -15,10 +15,9 @@ public class Main {
 		Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
 		
 		LoginService loginService = new LoginService(scanner);
-		Cliente clienteAutenticado = loginService.login();
+		Cliente clienteLogado = loginService.login();
 		
-		ContaService contaService = new ContaService(scanner, clienteAutenticado);
-
-			contaService.menu();
+		ContaService contaService = new ContaService(scanner, clienteLogado);	
+		contaService.menu();
 	}
 }

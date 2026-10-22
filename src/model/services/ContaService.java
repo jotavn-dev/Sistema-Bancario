@@ -7,39 +7,32 @@ import java.util.Scanner;
 
 import model.entities.Cliente;
 import model.entities.Conta;
-import model.entities.ContaCorrente;
-import model.entities.ContaPoupanca;
 import model.entities.Transacao;
+import model.factories.ContaFactory;
 
 public class ContaService {
 
 	private Scanner scanner;
 	
-	private Cliente cliente;
+	@SuppressWarnings("unused")
+	private Cliente clienteLogado;
 	
-	private Conta contaCorrente = new ContaCorrente.Builder()
-			.setNumero(1001).setAgencia("0002-4")
-			.setTaxaPagamento(new TaxaPagamentoBrasil())
-			.build();
+	private Conta contaCorrente = ContaFactory.contaCorrente();
 
-	private Conta contaPoupanca = new ContaPoupanca.Builder()
-			.setNumero(1003).setAgencia("0234-1")
-			.setTaxaPagamento(new TaxaPagamentoBrasil())
-			.build();
+	private Conta contaPoupanca = ContaFactory.contaPoupanca();
+			
 	
 	private DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	
-	public ContaService(Scanner scanner, Cliente cliente) {
+	public ContaService(Scanner scanner, Cliente clienteLogado) {
 		this.scanner = scanner;
-		this.cliente = cliente;
+		this.clienteLogado = clienteLogado;
 		
-		this.contaCorrente.setCliente(cliente);
-		this.contaPoupanca.setCliente(cliente);
+		this.contaCorrente.setClienteLogado(clienteLogado);
+		this.contaPoupanca.setClienteLogado(clienteLogado);
 	}
 	
-	public Cliente getCliente() {
-		return cliente;
-	}
+	
 
 	public void menu() {
 
@@ -68,12 +61,13 @@ public class ContaService {
 				
 				if (opcaoSaldo == 1) {
 					System.out.println("\nSaldo: R$ " + String.format("%.2f", contaPoupanca.getSaldo()));
-				}
-				else if (opcaoSaldo == 2) {
+					
+				} else if (opcaoSaldo == 2) {
 					System.out.println("\nSaldo: R$ " + String.format("%.2f", contaCorrente.getSaldo()));
-				}
-				else {
+					
+				} else {
 					System.out.println("Opcão inválida. Tente Novamente!");
+					
 				}
 				break;
 			case 2:
@@ -120,8 +114,8 @@ public class ContaService {
 				if (contaCorrente.getConsultarExtratos().isEmpty()) {
 					System.out.println("Você não executou nenhuma operação!");
 				}
-				else {
-					
+				
+				else {	
 					for (Transacao extrato : contaCorrente.getConsultarExtratos()) {
 						System.out.println("\nNumero da conta: " + extrato.getNumeroConta());
 						System.out.println("Nome: " + extrato.getCliente().getName());

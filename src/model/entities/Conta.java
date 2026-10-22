@@ -17,17 +17,17 @@ public abstract class Conta {
 	private double saldo;
 	private double limiteEmprestimo;
 	
-	private Cliente cliente;
+	private Cliente clienteLogado;
 	
 	private List<Transacao> consultarExtratos = new ArrayList<>();
 	
 	private Map<String, String> fluxoParcelas = new HashMap<>();
 
-	public Conta(Integer numeroConta, String agencia, Double saldo, Cliente cliente) {
+	protected Conta(Integer numeroConta, String agencia, Double saldo, Cliente clienteLogado) {
 		this.numeroConta = numeroConta;
 		this.agencia = agencia;
 		this.saldo = 100000.0;
-		this.cliente = cliente;
+		this.clienteLogado = clienteLogado;
 	}
 
 	public Integer getNumeroConta() {
@@ -42,12 +42,12 @@ public abstract class Conta {
 		return saldo;
 	}
 	
-	public Cliente getCliente() {
-		return cliente;
+	public Cliente getClienteLogado() {
+		return clienteLogado;
 	}
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	public void setClienteLogado(Cliente clienteLogado) {
+		this.clienteLogado = clienteLogado;
 	}
 	
 	public List<Transacao> getConsultarExtratos() {
@@ -71,13 +71,12 @@ public abstract class Conta {
 	}
 	
 	public void realizarSaque(double valor) {
-		
 		if (this.concederSaque(valor)) {
 			saldo -= valor;
 			System.out.println("Saque realizado com sucesso!\n");
 			consultarExtratos.add(new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
-					.setCliente(this.cliente)
+					.setCliente(this.clienteLogado)
 					.setData(LocalDateTime.now())
 					.setOperacao("Saque")
 					.setValor(valor)
@@ -102,7 +101,7 @@ public abstract class Conta {
 			System.out.println("Depósito realizado com sucesso!\n");
 			consultarExtratos.add(new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
-					.setCliente(cliente)
+					.setCliente(this.clienteLogado)
 					.setData(LocalDateTime.now())
 					.setOperacao("Deposito")
 					.setValor(valor)
@@ -139,7 +138,7 @@ public abstract class Conta {
 			
 			consultarExtratos.add(new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
-					.setCliente(cliente)
+					.setCliente(this.clienteLogado)
 					.setData(LocalDateTime.now())
 					.setOperacao("Emprestimo")
 					.setValor(subValor)
@@ -169,7 +168,7 @@ public abstract class Conta {
 			
 			consultarExtratos.add(new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
-					.setCliente(cliente)
+					.setCliente(this.clienteLogado)
 					.setData(LocalDateTime.now())
 					.setOperacao("Transferência")
 					.setValor(valor)
