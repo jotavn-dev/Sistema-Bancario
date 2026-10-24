@@ -1,14 +1,13 @@
 package model.services;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 import model.entities.Cliente;
 import model.entities.Conta;
-import model.entities.Transacao;
 import model.factories.ContaFactory;
+import model.listeners.ExtratoListener;
 
 public class ContaService {
 
@@ -20,9 +19,6 @@ public class ContaService {
 	private Conta contaCorrente = ContaFactory.contaCorrente();
 
 	private Conta contaPoupanca = ContaFactory.contaPoupanca();
-			
-	
-	private DateTimeFormatter fm1 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	
 	public ContaService(Scanner scanner, Cliente clienteLogado) {
 		this.scanner = scanner;
@@ -31,8 +27,6 @@ public class ContaService {
 		this.contaCorrente.setClienteLogado(clienteLogado);
 		this.contaPoupanca.setClienteLogado(clienteLogado);
 	}
-	
-	
 
 	public void menu() {
 
@@ -70,14 +64,17 @@ public class ContaService {
 					
 				}
 				break;
+				
 			case 2:
 				System.out.print("\nQual valor do deposito: R$ ");
 				contaCorrente.realizarDeposito(scanner.nextDouble());
 				break;
+				
 			case 3:
 				System.out.print("\nQual valor do saque: R$ ");
 				contaCorrente.realizarSaque(scanner.nextDouble());
 				break;
+				
 			case 4:
 				System.out.print("\nDigite o valor: ");
 				double valor = scanner.nextDouble();
@@ -86,6 +83,7 @@ public class ContaService {
 				
 				contaCorrente.realizarTransferencia(contaPoupanca, valor);
 				break;
+				
 			case 5:
 				System.out.println("\n1 - Você quer fazer um emprestimo: ");
 				System.out.print("2 - Você quer consultar as parcelas:\n-> ");
@@ -111,20 +109,13 @@ public class ContaService {
 				break;
 				
 			case 6:
-				if (contaCorrente.getConsultarExtratos().isEmpty()) {
-					System.out.println("Você não executou nenhuma operação!");
+				ExtratoListener extratoListener = contaCorrente.getExtratoListener();
+				if (extratoListener.getExtratos().isEmpty()) {
+					System.out.println("\nVocê não executou nenhuma operação!");
 				}
 				
-				else {	
-					for (Transacao extrato : contaCorrente.getConsultarExtratos()) {
-						System.out.println("\nNumero da conta: " + extrato.getNumeroConta());
-						System.out.println("Nome: " + extrato.getCliente().getName());
-						System.out.println("Cpf: " + extrato.getCliente().getCpf());
-						System.out.println("Data: " + fm1.format(extrato.getData()));
-						System.out.println("\nOperação: " + extrato.getOperacao());
-						System.out.println("R$ " + String.format("%.2f", 
-								extrato.getValor()) + "\n");
-					}
+				else {
+					extratoListener.exibirExtrato();
 				}
 				break;
 				

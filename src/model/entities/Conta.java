@@ -1,10 +1,12 @@
 package model.entities;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import model.listeners.ExtratoListener;
+import model.listeners.ExtratoService;
+import model.listeners.NotificacaoListener;
 
 public abstract class Conta {
 	
@@ -19,7 +21,8 @@ public abstract class Conta {
 	
 	private Cliente clienteLogado;
 	
-	private List<Transacao> consultarExtratos = new ArrayList<>();
+	private ExtratoService extrato = new ExtratoService();
+	private ExtratoListener extratoListener = new ExtratoListener();
 	
 	private Map<String, String> fluxoParcelas = new HashMap<>();
 
@@ -28,6 +31,9 @@ public abstract class Conta {
 		this.agencia = agencia;
 		this.saldo = 100000.0;
 		this.clienteLogado = clienteLogado;
+		
+		extrato.addListener(extratoListener);
+		extrato.addListener(new NotificacaoListener());
 	}
 
 	public Integer getNumeroConta() {
@@ -50,8 +56,12 @@ public abstract class Conta {
 		this.clienteLogado = clienteLogado;
 	}
 	
-	public List<Transacao> getConsultarExtratos() {
-		return consultarExtratos;
+	public ExtratoService getExtrato() {
+		return extrato;
+	}
+	
+	public ExtratoListener getExtratoListener() {
+		return extratoListener;
 	}
 	
 	public Map<String, String> getFluxoParcelas() {
@@ -62,25 +72,19 @@ public abstract class Conta {
 		return limiteEmprestimo;
 	}
 	
-	private void calcularLimiteEmprestimo(int meses) {
-		double trintaPorCento = 0.30;
-		
-		double limiteEmprestimo = saldo * trintaPorCento * meses;
-		
-		this.limiteEmprestimo = limiteEmprestimo;
-	}
-	
 	public void realizarSaque(double valor) {
 		if (this.concederSaque(valor)) {
 			saldo -= valor;
-			System.out.println("Saque realizado com sucesso!\n");
-			consultarExtratos.add(new Transacao.Builder()
+			
+			Transacao transacao = new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
 					.setCliente(this.clienteLogado)
 					.setData(LocalDateTime.now())
 					.setOperacao("Saque")
 					.setValor(valor)
-					.build());
+					.build();
+		
+			extrato.notifyExtrato(transacao);
 		}
 		else {
 			if (valor <= 0.0) {
@@ -98,14 +102,17 @@ public abstract class Conta {
 		
 		if (this.concederDeposito(valor)) {
 			saldo += valor;
-			System.out.println("Depósito realizado com sucesso!\n");
-			consultarExtratos.add(new Transacao.Builder()
+			
+			Transacao transacao = new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
 					.setCliente(this.clienteLogado)
 					.setData(LocalDateTime.now())
-					.setOperacao("Deposito")
+					.setOperacao("Depósito")
 					.setValor(valor)
-					.build());
+					.build();
+			
+			extrato.notifyExtrato(transacao);
+			
 		}
 		else {
 			if (valor <= 0.0) {
@@ -134,15 +141,15 @@ public abstract class Conta {
 				fluxoParcelas.put(data + " - parcela", String.format("R$ %.2f", parcelas));
 			}
 			
-			System.out.println("Emprestimo de R$ " + String.format("%.2f", subValor) + " aprovado.\n");
-			
-			consultarExtratos.add(new Transacao.Builder()
+			Transacao transacao = new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
 					.setCliente(this.clienteLogado)
 					.setData(LocalDateTime.now())
 					.setOperacao("Emprestimo")
 					.setValor(subValor)
-					.build());
+					.build();
+			
+			extrato.notifyExtrato(transacao);
 		}
 		else {
 			if (subValor <= 0.0) {
@@ -160,19 +167,28 @@ public abstract class Conta {
 		}
 	}
 	
+	private void calcularLimiteEmprestimo(int meses) {
+		double trintaPorCento = 0.30;
+		
+		double limiteEmprestimo = saldo * trintaPorCento * meses;
+		
+		this.limiteEmprestimo = limiteEmprestimo;
+	}
+	
 	public void realizarTransferencia(Conta conta, double valor) {
 		if (concederTransferencia(valor)) {
 			this.debitar(valor);
 			conta.creditar(valor);
-			System.out.println("Transferência realizada com sucesso!\n");
 			
-			consultarExtratos.add(new Transacao.Builder()
+			Transacao transacao = new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
 					.setCliente(this.clienteLogado)
 					.setData(LocalDateTime.now())
 					.setOperacao("Transferência")
 					.setValor(valor)
-					.build());
+					.build();
+			
+			extrato.notifyExtrato(transacao);
 		}
 		else {
 			if (valor <= 0.0) {
