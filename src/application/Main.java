@@ -10,14 +10,15 @@ import model.services.LoginService;
 public class Main {
 	
 	public static void main(String[] args) {
-		
-		Locale.setDefault(Locale.US);
+
 		Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
+
+		LeitorConsole leitor = new LeitorConsole(scanner);
 		
-		LoginService loginService = new LoginService(scanner);
+		LoginService loginService = new LoginService(leitor);
 		Cliente clienteLogado = loginService.login();
 		
-		ContaService contaService = new ContaService(scanner, clienteLogado);	
+		ContaService contaService = new ContaService(leitor, clienteLogado);
 		contaService.menu();
 	}
 }

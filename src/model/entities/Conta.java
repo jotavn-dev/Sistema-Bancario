@@ -1,12 +1,11 @@
 package model.entities;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import model.exceptions.OperacaoInvalidaException;
 import model.listeners.ExtratoListener;
 import model.listeners.ExtratoService;
-import model.listeners.NotificacaoListener;
 
 public abstract class Conta {
 	
@@ -24,7 +23,7 @@ public abstract class Conta {
 	private ExtratoService extrato = new ExtratoService();
 	private ExtratoListener extratoListener = new ExtratoListener();
 	
-	private Map<String, String> fluxoParcelas = new HashMap<>();
+	private List<String> fluxoParcelas = new ArrayList<>();
 
 	protected Conta(Integer numeroConta, String agencia, Double saldo, Cliente clienteLogado) {
 		this.numeroConta = numeroConta;
@@ -33,7 +32,6 @@ public abstract class Conta {
 		this.clienteLogado = clienteLogado;
 		
 		extrato.addListener(extratoListener);
-		extrato.addListener(new NotificacaoListener());
 	}
 
 	public Integer getNumeroConta() {
@@ -64,7 +62,7 @@ public abstract class Conta {
 		return extratoListener;
 	}
 	
-	public Map<String, String> getFluxoParcelas() {
+	public List<String> getFluxoParcelas() {
 		return fluxoParcelas;
 	}
 	
@@ -86,14 +84,17 @@ public abstract class Conta {
 		
 			extrato.notifyExtrato(transacao);
 		}
-		else {
-			if (valor <= 0.0) {
-				System.out.println("Saque negado. O valor é menor que R$ 0.00.");
-			}
-			
-			if (valor > getSaldo()) {
-				System.out.println("Saque negado. Saldo insuficiente!");
-			}		
+
+		if (valor <= 0.0) {
+			throw new OperacaoInvalidaException("Valor do saque tem que ser maior que R$ 0.00.");
+		}
+
+		if (valor > getSaldo()) {
+			throw new OperacaoInvalidaException("Saldo insuficiente");
+		}
+
+		if (!this.concederSaque(valor)) {
+			throw new OperacaoInvalidaException("Saque não autorizado para este tipo de conta.");
 		}
 	}
 	
@@ -102,7 +103,7 @@ public abstract class Conta {
 		
 		if (this.concederDeposito(valor)) {
 			saldo += valor;
-			
+
 			Transacao transacao = new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
 					.setCliente(this.clienteLogado)
@@ -110,23 +111,24 @@ public abstract class Conta {
 					.setOperacao("Depósito")
 					.setValor(valor)
 					.build();
-			
+
 			extrato.notifyExtrato(transacao);
-			
+
 		}
-		else {
-			if (valor <= 0.0) {
-				System.out.println("Saque negado. Valor menor que R$ 0.00.");
-			}
-			
-			if (hora < HORA_INICIO_NOTURNO && valor > LIMITE_DEPOSITO_DIURNO) {
-				System.out.println("Saque negado. O valor ultrapassou o limite diuno padrão de R$ " + LIMITE_DEPOSITO_DIURNO);
-			}
-			
-			if (hora >= HORA_INICIO_NOTURNO && valor > LIMITE_DEPOSITO_NORTUNO) {
-				System.out.println("Saque negado. O valor ultrapassou o limte nortuno padrão de R$ " + LIMITE_DEPOSITO_NORTUNO);
-			}
+		if (valor <= 0.0) {
+			throw new OperacaoInvalidaException("Valor do depósito tem que ser maior que R$ 0.00.");
 		}
+
+		if (hora < HORA_INICIO_NOTURNO && valor > LIMITE_DEPOSITO_DIURNO) {
+			throw new OperacaoInvalidaException("Valor ultrapassou o limite diuno padrão de R$ "
+					+ LIMITE_DEPOSITO_DIURNO);
+		}
+
+		if (hora >= HORA_INICIO_NOTURNO && valor > LIMITE_DEPOSITO_NORTUNO) {
+			throw new OperacaoInvalidaException("Valor ultrapassou o limte nortuno padrão de R$ "
+					+ LIMITE_DEPOSITO_NORTUNO);
+		}
+
 	}
 	
 	public void realizarEmprestimo(double subValor, int meses) {
@@ -138,7 +140,8 @@ public abstract class Conta {
 			double parcelas = jurosComposto / meses;
 			
 			for (int data = 1; data <= meses; data++) {
-				fluxoParcelas.put(data + " - parcela", String.format("R$ %.2f", parcelas));
+				fluxoParcelas.add(data + " - parcela - R$ " +
+						String.format("%.2f", parcelas));
 			}
 			
 			Transacao transacao = new Transacao.Builder()
@@ -151,28 +154,24 @@ public abstract class Conta {
 			
 			extrato.notifyExtrato(transacao);
 		}
-		else {
-			if (subValor <= 0.0) {
-				System.out.println("Emprestimo negado. Valor menor que R$ 0.00.");
-			}
-			
-			if (meses <= 0) {
-				System.out.println("Emprestimo negado. Prazo inválido.");
-			}
-			
-			else if (subValor > getLimiteEmprestimo()) {
-				System.out.println("Emprestimo negado. Valor ultrapassou seu limite de emprestimo de R$ "
+		if (subValor <= 0.0) {
+			throw new OperacaoInvalidaException("Valor do emprestimo tem que ser maior que R$ 0.00.");
+		}
+
+		if (meses <= 0) {
+			throw new OperacaoInvalidaException("Prazo inválido.");
+		}
+
+		if (subValor > getLimiteEmprestimo()) {
+			throw new OperacaoInvalidaException("Valor ultrapassou seu limite de emprestimo de R$ "
 					+ String.format("%.2f", getLimiteEmprestimo()));
-			}
 		}
 	}
 	
 	private void calcularLimiteEmprestimo(int meses) {
 		double trintaPorCento = 0.30;
-		
-		double limiteEmprestimo = saldo * trintaPorCento * meses;
-		
-		this.limiteEmprestimo = limiteEmprestimo;
+
+        this.limiteEmprestimo = saldo * trintaPorCento * meses;
 	}
 	
 	public void realizarTransferencia(Conta conta, double valor) {
@@ -190,14 +189,12 @@ public abstract class Conta {
 			
 			extrato.notifyExtrato(transacao);
 		}
-		else {
-			if (valor <= 0.0) {
-				System.out.println("Transferência negada. Valor menor que R$ 0.00");
-			}
-			
-			if (valor > saldo) {
-				System.out.println("Transferência negada. Saldo insuficiente.");
-			}
+		if (valor <= 0.0) {
+			throw new OperacaoInvalidaException("Valor da transferência tem que ser maior que R$ 0.00");
+		}
+
+		if (valor > getSaldo()) {
+			throw new OperacaoInvalidaException("Saldo insuficiente.");
 		}
 	}
 	
@@ -208,10 +205,10 @@ public abstract class Conta {
 	private void debitar(double valor) {
 		saldo -= valor;
 	}
-	
+
 	public void fluxoParcelas() {
-		for (String consulta : fluxoParcelas.keySet()) {
-			System.out.println(consulta + " - " + this.getFluxoParcelas().get(consulta));
+		for (String consultar : fluxoParcelas) {
+			System.out.println(consultar);
 		}
 	}
 	

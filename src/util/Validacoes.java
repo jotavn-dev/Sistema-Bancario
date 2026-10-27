@@ -1,15 +1,29 @@
 package util;
 
+import application.LeitorConsole;
+
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Validacoes {
 
-	public static boolean identificarRegex(String texto) {
-		Pattern patternNumero = Pattern.compile("[^\\p{L}\\s]");
-		Matcher temNumeroOuSimbolo = patternNumero.matcher(texto);
+	private static final Scanner scanner = new Scanner(System.in);
+	private static final LeitorConsole leitor = new LeitorConsole(scanner);
 
-		return temNumeroOuSimbolo.find();
+	public static void identificarRegex(String texto) {
+		while (true) {
+			Pattern patternNumero = Pattern.compile("[^\\p{L}\\s]");
+			Matcher temNumeroOuSimbolo = patternNumero.matcher(texto);
+
+			if (temNumeroOuSimbolo.find()) {
+				System.out.println("Digite somente letras!");
+				System.out.print("Tente Novamente: ");
+				texto = leitor.lerTexto();
+				continue;
+			}
+			break;
+		}
 	}
 	
 	public static String formatadorCpf(Long cpf) {

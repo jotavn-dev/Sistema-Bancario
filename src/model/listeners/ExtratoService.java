@@ -24,5 +24,6 @@ public class ExtratoService {
 		for (TransacaoListener enviarTransacao : listeners) {
 			enviarTransacao.transacaoRealizada(transacao);
 		}
+
 	}
 }
