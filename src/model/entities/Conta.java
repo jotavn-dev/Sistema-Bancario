@@ -1,11 +1,13 @@
 package model.entities;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
 import model.exceptions.OperacaoInvalidaException;
 import model.listeners.ExtratoListener;
 import model.listeners.ExtratoService;
+import model.services.TaxaPagamentoBrasil;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Conta {
 	
@@ -18,18 +20,18 @@ public abstract class Conta {
 	private double saldo;
 	private double limiteEmprestimo;
 	
-	private Cliente clienteLogado;
-	
-	private ExtratoService extrato = new ExtratoService();
-	private ExtratoListener extratoListener = new ExtratoListener();
-	
-	private List<String> fluxoParcelas = new ArrayList<>();
+	private Cliente clienteAutenticado;
 
-	protected Conta(Integer numeroConta, String agencia, Double saldo, Cliente clienteLogado) {
+	private final List<Emprestimo> emprestimos = new ArrayList<>();
+	
+	private final ExtratoService extrato = new ExtratoService();
+	private final ExtratoListener extratoListener = new ExtratoListener();
+
+	protected Conta(Integer numeroConta, String agencia, Double saldo, Cliente clienteAutenticado) {
 		this.numeroConta = numeroConta;
 		this.agencia = agencia;
 		this.saldo = 100000.0;
-		this.clienteLogado = clienteLogado;
+		this.clienteAutenticado = clienteAutenticado;
 		
 		extrato.addListener(extratoListener);
 	}
@@ -46,14 +48,16 @@ public abstract class Conta {
 		return saldo;
 	}
 	
-	public Cliente getClienteLogado() {
-		return clienteLogado;
+	public Cliente getClienteAutenticado() {
+		return clienteAutenticado;
 	}
 
-	public void setClienteLogado(Cliente clienteLogado) {
-		this.clienteLogado = clienteLogado;
-	}
-	
+	public void setClienteAutenticado(Cliente clienteAutenticado) { this.clienteAutenticado = clienteAutenticado; }
+
+	public List<Emprestimo> getEmprestimos() { return emprestimos; }
+
+	public double getLimiteEmprestimo() { return limiteEmprestimo; }
+
 	public ExtratoService getExtrato() {
 		return extrato;
 	}
@@ -62,28 +66,7 @@ public abstract class Conta {
 		return extratoListener;
 	}
 	
-	public List<String> getFluxoParcelas() {
-		return fluxoParcelas;
-	}
-	
-	public double getLimiteEmprestimo() {
-		return limiteEmprestimo;
-	}
-	
 	public void realizarSaque(double valor) {
-		if (this.concederSaque(valor)) {
-			saldo -= valor;
-			
-			Transacao transacao = new Transacao.Builder()
-					.setNumeroConta(this.numeroConta)
-					.setCliente(this.clienteLogado)
-					.setData(LocalDateTime.now())
-					.setOperacao("Saque")
-					.setValor(valor)
-					.build();
-		
-			extrato.notifyExtrato(transacao);
-		}
 
 		if (valor <= 0.0) {
 			throw new OperacaoInvalidaException("Valor do saque tem que ser maior que R$ 0.00.");
@@ -96,25 +79,25 @@ public abstract class Conta {
 		if (!this.concederSaque(valor)) {
 			throw new OperacaoInvalidaException("Saque não autorizado para este tipo de conta.");
 		}
+
+		if (this.concederSaque(valor)) {
+			saldo -= valor;
+			
+			Transacao transacao = new Transacao.Builder()
+					.setNumeroConta(this.numeroConta)
+					.setCliente(this.clienteAutenticado)
+					.setData(LocalDateTime.now())
+					.setOperacao("Saque")
+					.setValor(valor)
+					.build();
+		
+			extrato.notifyExtrato(transacao);
+		}
 	}
 	
 	public void realizarDeposito(double valor) {
 		int hora = LocalDateTime.now().getHour();
-		
-		if (this.concederDeposito(valor)) {
-			saldo += valor;
 
-			Transacao transacao = new Transacao.Builder()
-					.setNumeroConta(this.numeroConta)
-					.setCliente(this.clienteLogado)
-					.setData(LocalDateTime.now())
-					.setOperacao("Depósito")
-					.setValor(valor)
-					.build();
-
-			extrato.notifyExtrato(transacao);
-
-		}
 		if (valor <= 0.0) {
 			throw new OperacaoInvalidaException("Valor do depósito tem que ser maior que R$ 0.00.");
 		}
@@ -129,66 +112,71 @@ public abstract class Conta {
 					+ LIMITE_DEPOSITO_NORTUNO);
 		}
 
-	}
-	
-	public void realizarEmprestimo(double subValor, int meses) {
-		calcularLimiteEmprestimo(meses);
+		if (!concederDeposito(valor)) {
+			throw new OperacaoInvalidaException("Depósito não autorizado para este tipo de conta.");
+		}
 
-		if (concederEmprestimo(subValor, meses)) {
-			saldo += subValor;
-			double jurosComposto = subValor * Math.pow(1 + taxa(subValor), meses);
-			double parcelas = jurosComposto / meses;
-			
-			for (int data = 1; data <= meses; data++) {
-				fluxoParcelas.add(data + " - parcela - R$ " +
-						String.format("%.2f", parcelas));
-			}
-			
+		if (this.concederDeposito(valor)) {
+			saldo += valor;
+
 			Transacao transacao = new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
-					.setCliente(this.clienteLogado)
+					.setCliente(this.clienteAutenticado)
 					.setData(LocalDateTime.now())
-					.setOperacao("Emprestimo")
-					.setValor(subValor)
+					.setOperacao("Depósito")
+					.setValor(valor)
 					.build();
-			
+
 			extrato.notifyExtrato(transacao);
 		}
-		if (subValor <= 0.0) {
+	}
+	
+	public void realizarEmprestimo(double valor, int prazo) {
+		calcularLimiteEmprestimo(prazo);
+
+		if (valor <= 0.0) {
 			throw new OperacaoInvalidaException("Valor do emprestimo tem que ser maior que R$ 0.00.");
 		}
 
-		if (meses <= 0) {
+		if (prazo <= 0) {
 			throw new OperacaoInvalidaException("Prazo inválido.");
 		}
 
-		if (subValor > getLimiteEmprestimo()) {
+		if (valor > getLimiteEmprestimo()) {
 			throw new OperacaoInvalidaException("Valor ultrapassou seu limite de emprestimo de R$ "
 					+ String.format("%.2f", getLimiteEmprestimo()));
 		}
-	}
-	
-	private void calcularLimiteEmprestimo(int meses) {
-		double trintaPorCento = 0.30;
 
-        this.limiteEmprestimo = saldo * trintaPorCento * meses;
-	}
-	
-	public void realizarTransferencia(Conta conta, double valor) {
-		if (concederTransferencia(valor)) {
-			this.debitar(valor);
-			conta.creditar(valor);
+		if (!concederEmprestimo(valor, prazo)) {
+			throw new OperacaoInvalidaException("Emprestimo não autorizado para este tipo de conta.");
+		}
+
+		if (concederEmprestimo(valor, prazo)) {
+			saldo += valor;
+			Emprestimo emprestimo = new Emprestimo(valor, prazo, new TaxaPagamentoBrasil());
+			emprestimos.add(emprestimo);
+
+			emprestimo.calcularJuros();
+			emprestimo.addParcela();
 			
 			Transacao transacao = new Transacao.Builder()
 					.setNumeroConta(this.numeroConta)
-					.setCliente(this.clienteLogado)
+					.setCliente(this.clienteAutenticado)
 					.setData(LocalDateTime.now())
-					.setOperacao("Transferência")
+					.setOperacao("Emprestimo")
 					.setValor(valor)
 					.build();
 			
 			extrato.notifyExtrato(transacao);
 		}
+	}
+
+	private void calcularLimiteEmprestimo(int prazo) {
+		this.limiteEmprestimo = (saldo * 0.30) / prazo;
+	}
+	
+	public void realizarTransferencia(Conta conta, double valor) {
+
 		if (valor <= 0.0) {
 			throw new OperacaoInvalidaException("Valor da transferência tem que ser maior que R$ 0.00");
 		}
@@ -196,21 +184,30 @@ public abstract class Conta {
 		if (valor > getSaldo()) {
 			throw new OperacaoInvalidaException("Saldo insuficiente.");
 		}
-	}
-	
-	private void creditar(double valor) {
-		saldo += valor;
-	}
-	
-	private void debitar(double valor) {
-		saldo -= valor;
-	}
 
-	public void fluxoParcelas() {
-		for (String consultar : fluxoParcelas) {
-			System.out.println(consultar);
+		if (!concederTransferencia(valor)) {
+			throw new OperacaoInvalidaException("Transferência não autorizada para este tipo de conta");
+		}
+
+		if (concederTransferencia(valor)) {
+			this.debitar(valor);
+			conta.creditar(valor);
+			
+			Transacao transacao = new Transacao.Builder()
+					.setNumeroConta(this.numeroConta)
+					.setCliente(this.clienteAutenticado)
+					.setData(LocalDateTime.now())
+					.setOperacao("Transferência")
+					.setValor(valor)
+					.build();
+			
+			extrato.notifyExtrato(transacao);
 		}
 	}
+	
+	private void creditar(double valor) { saldo += valor; }
+	
+	private void debitar(double valor) { saldo -= valor; }
 	
 	protected abstract boolean concederDeposito(double valor);
 	

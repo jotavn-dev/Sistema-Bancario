@@ -3,6 +3,7 @@ package model.services;
 import application.LeitorConsole;
 import model.entities.Cliente;
 import model.entities.Conta;
+import model.entities.Emprestimo;
 import model.exceptions.OperacaoInvalidaException;
 import model.factories.ContaFactory;
 import model.listeners.ExtratoListener;
@@ -25,8 +26,8 @@ public class ContaService {
 		this.leitor = leitor;
 		this.clienteAutenticado = clienteAutenticado;
 
-		this.contaCorrente.setClienteLogado(clienteAutenticado);
-		this.contaPoupanca.setClienteLogado(clienteAutenticado);
+		this.contaCorrente.setClienteAutenticado(clienteAutenticado);
+		this.contaPoupanca.setClienteAutenticado(clienteAutenticado);
 	}
 
 	public void menu() {
@@ -115,11 +116,20 @@ public class ContaService {
 						int prazo = leitor.lerInteiro();
 
 						contaCorrente.realizarEmprestimo(valor, prazo);
+						System.out.printf("\nEmprestimo de R$ %.2f realizado com sucesso!", valor);
 
-					} else if (opcaoEmprestimo == 2) {
-						contaCorrente.fluxoParcelas();
-
-					} else {
+					}
+					else if (opcaoEmprestimo == 2) {
+						if (contaCorrente.getEmprestimos().isEmpty()) {
+							System.out.println("\nVocê não executou nenhuma operação!");
+						}
+						else {
+							for (Emprestimo consulta : contaCorrente.getEmprestimos()) {
+								consulta.consultarParcela();
+							}
+						}
+					}
+					else {
 						System.out.println("Essa opção não existe!");
 					}
 				}

@@ -27,9 +27,20 @@ public class Validacoes {
 	}
 	
 	public static String formatadorCpf(Long cpf) {
-		String cpfFormatado = String.valueOf(cpf);
+		while (true) {
+			String cpfFormatado = String.valueOf(cpf);
 
-		return String.format("%s.%s.%s-%s", cpfFormatado.substring(0, 3), cpfFormatado.substring(3, 6),
-				cpfFormatado.substring(6, 9), cpfFormatado.substring(9, 11));
+			if (cpfFormatado.length() != 11) {
+				System.out.println("\nErro: o cpf deve ter exatamente 11 dígitos");
+				System.out.print("Tente Novamente: ");
+				cpf = leitor.lerLong();
+				continue;
+			}
+
+			return String.format("%s.%s.%s-%s", cpfFormatado.substring(0, 3), cpfFormatado.substring(3, 6),
+					cpfFormatado.substring(6, 9), cpfFormatado.substring(9, 11));
+		}
+
+
 	}
 }
