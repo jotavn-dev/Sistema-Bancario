@@ -17,23 +17,21 @@ public abstract class Conta {
 	
 	private Integer numeroConta;
 	private String agencia;
-	private double saldo;
-	private double limiteEmprestimo;
+	private Double saldo = 10.000;
+	private Double limiteEmprestimo;
 	
 	private Cliente clienteAutenticado;
 
 	private final List<Emprestimo> emprestimos = new ArrayList<>();
 	
-	private final ExtratoService extrato = new ExtratoService();
-	private final ExtratoListener extratoListener = new ExtratoListener();
+	private final ExtratoService EXTRATO = new ExtratoService();
+	private final ExtratoListener EXTRATOlISTENER = new ExtratoListener();
 
-	protected Conta(Integer numeroConta, String agencia, Double saldo, Cliente clienteAutenticado) {
+	protected Conta(Integer numeroConta, String agencia) {
 		this.numeroConta = numeroConta;
 		this.agencia = agencia;
-		this.saldo = 100000.0;
-		this.clienteAutenticado = clienteAutenticado;
 		
-		extrato.addListener(extratoListener);
+		EXTRATO.addListener(EXTRATOlISTENER);
 	}
 
 	public Integer getNumeroConta() {
@@ -56,14 +54,14 @@ public abstract class Conta {
 
 	public List<Emprestimo> getEmprestimos() { return emprestimos; }
 
-	public double getLimiteEmprestimo() { return limiteEmprestimo; }
+	public Double getLimiteEmprestimo() { return limiteEmprestimo; }
 
-	public ExtratoService getExtrato() {
-		return extrato;
+	public ExtratoService getEXTRATO() {
+		return EXTRATO;
 	}
 	
-	public ExtratoListener getExtratoListener() {
-		return extratoListener;
+	public ExtratoListener getEXTRATOlISTENER() {
+		return EXTRATOlISTENER;
 	}
 	
 	public void realizarSaque(double valor) {
@@ -91,7 +89,7 @@ public abstract class Conta {
 					.setValor(valor)
 					.build();
 		
-			extrato.notifyExtrato(transacao);
+			EXTRATO.notifyExtrato(transacao);
 		}
 	}
 	
@@ -127,7 +125,7 @@ public abstract class Conta {
 					.setValor(valor)
 					.build();
 
-			extrato.notifyExtrato(transacao);
+			EXTRATO.notifyExtrato(transacao);
 		}
 	}
 	
@@ -167,7 +165,7 @@ public abstract class Conta {
 					.setValor(valor)
 					.build();
 			
-			extrato.notifyExtrato(transacao);
+			EXTRATO.notifyExtrato(transacao);
 		}
 	}
 
@@ -201,7 +199,7 @@ public abstract class Conta {
 					.setValor(valor)
 					.build();
 			
-			extrato.notifyExtrato(transacao);
+			EXTRATO.notifyExtrato(transacao);
 		}
 	}
 	

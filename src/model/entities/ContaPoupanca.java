@@ -8,16 +8,8 @@ public class ContaPoupanca extends Conta {
 
 	private TaxaPagamento taxaPagamento;
 
-	private ContaPoupanca(Integer numero, String agencia, Double saldo, Cliente clienteLogado, TaxaPagamento taxaPagamento) {
-		super(numero, agencia, saldo, clienteLogado);
-		this.taxaPagamento = taxaPagamento;
-	}
-	
-	public TaxaPagamento getTaxaPagamento() {
-		return taxaPagamento;
-	}
-
-	public void setTaxaPagamento(TaxaPagamento taxaPagamento) {
+	private ContaPoupanca(Integer numero, String agencia, TaxaPagamento taxaPagamento) {
+		super(numero, agencia);
 		this.taxaPagamento = taxaPagamento;
 	}
 
@@ -25,7 +17,7 @@ public class ContaPoupanca extends Conta {
 	protected boolean concederDeposito(double valor) {
 		int hora = LocalDateTime.now().getHour();
 
-		Double limiteDeposito;
+		double limiteDeposito;
 		if (hora >= HORA_INICIO_NOTURNO) {
 			limiteDeposito = LIMITE_DEPOSITO_NORTUNO;
 		} else {
@@ -58,8 +50,6 @@ public class ContaPoupanca extends Conta {
 	public static class Builder {
 		private Integer numero;
 		private String agencia;
-		private double saldo;
-		private Cliente clienteLogado;
 		private TaxaPagamento taxaPagamento;
 
 		public Builder setNumero(Integer numero) {
@@ -71,11 +61,6 @@ public class ContaPoupanca extends Conta {
 			this.agencia = agencia;
 			return this;
 		}
-		
-		public Builder setCliente(Cliente clienteLogado) {
-			this.clienteLogado = clienteLogado;
-			return this;
-		}
 
 		public Builder setTaxaPagamento(TaxaPagamento taxaPagamento) {
 			this.taxaPagamento = taxaPagamento;
@@ -83,7 +68,7 @@ public class ContaPoupanca extends Conta {
 		}
 
 		public ContaPoupanca build() {
-			return new ContaPoupanca(numero, agencia, saldo, clienteLogado, taxaPagamento);
+			return new ContaPoupanca(numero, agencia, taxaPagamento);
 		}
 	}
 

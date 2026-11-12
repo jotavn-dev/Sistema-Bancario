@@ -139,7 +139,7 @@ public class ContaService {
 				break;
 
 			case 6:
-				ExtratoListener extratoListener = contaCorrente.getExtratoListener();
+				ExtratoListener extratoListener = contaCorrente.getEXTRATOlISTENER();
 
 				if (extratoListener.getExtratos().isEmpty()) {
 					System.out.println("\nVocê não executou nenhuma operação!");

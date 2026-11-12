@@ -9,14 +9,14 @@ public class Transacao {
 	private LocalDateTime data;
 	private Integer numeroConta;
 	
-	private Cliente clienteLogado;
+	private Cliente clienteAutenticado;
 	
-	private Transacao(String operacao, Double valor, LocalDateTime data, Integer numeroConta, Cliente clienteLogado) {
+	private Transacao(String operacao, Double valor, LocalDateTime data, Integer numeroConta, Cliente clienteAutenticado) {
 		this.operacao = operacao;
 		this.valor = valor;
 		this.data = data;
 		this.numeroConta = numeroConta;
-		this.clienteLogado = clienteLogado;
+		this.clienteAutenticado = clienteAutenticado;
 	}
 	
 	public String getOperacao() {
@@ -32,7 +32,7 @@ public class Transacao {
 	}
 	
 	public Cliente getCliente() {
-		return clienteLogado;
+		return clienteAutenticado;
 	}
 	
 	public Integer getNumeroConta() {
@@ -44,7 +44,7 @@ public class Transacao {
 		private Double valor;
 		private LocalDateTime data;
 		private Integer numeroConta;
-		private Cliente clienteLogado;
+		private Cliente clienteAutenticado;
 		
 		public Builder setOperacao(String operacao) {
 			this.operacao = operacao;
@@ -66,13 +66,13 @@ public class Transacao {
 			return this;
 		}
 		
-		public Builder setCliente(Cliente clienteLogado) {
-			this.clienteLogado = clienteLogado;
+		public Builder setCliente(Cliente clienteAutenticado) {
+			this.clienteAutenticado = clienteAutenticado;
 			return this;
 		}
 		
 		public Transacao build() {
-			return new Transacao(operacao, valor, data, numeroConta, clienteLogado);
+			return new Transacao(operacao, valor, data, numeroConta, clienteAutenticado);
 		}
 	}
 }

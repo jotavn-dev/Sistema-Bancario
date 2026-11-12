@@ -8,7 +8,6 @@ import model.services.TaxaPagamentoBrasil;
 public class ContaFactory {
 
 	public static Conta contaCorrente() {
-		
 		return new ContaCorrente.Builder()
 				.setNumero(1001)
 				.setAgencia("0002-4")
@@ -17,7 +16,6 @@ public class ContaFactory {
 	}
 	
 	public static Conta contaPoupanca() {
-		
 		return new ContaPoupanca.Builder()
 				.setNumero(1003)
 				.setAgencia("0234-1")

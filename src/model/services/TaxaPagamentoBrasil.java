@@ -6,8 +6,8 @@ public class TaxaPagamentoBrasil implements TaxaPagamento {
 	}
 	
 	@Override
-	public double tax(double quantia) {
-		if (quantia <= 100.0) {
+	public double taxa(double valor) {
+		if (valor <= 100.0) {
 			return 0.0115;
 		}
 		else {

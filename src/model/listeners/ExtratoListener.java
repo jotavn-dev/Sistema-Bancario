@@ -38,7 +38,7 @@ class ExtratoFormatado {
 	public void preparaExtrato() {
 		for(Transacao extrato : extratos) {
 			System.out.println("\nNúmero da conta: " + extrato.getNumeroConta());
-			System.out.println("\nNome: " + extrato.getCliente().getName());
+			System.out.println("\nNome: " + extrato.getCliente().getNome());
 			System.out.println("\nCpf: " + extrato.getCliente().getCpf());
 			System.out.println("\nData: " + fm1.format(extrato.getData()));
 			System.out.println("\nOperação: " + extrato.getOperacao());

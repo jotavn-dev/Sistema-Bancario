@@ -29,7 +29,7 @@ public class Emprestimo {
     public Double getJuros() { return juros; }
 
     protected void calcularJuros() {
-        double taxa = 1 + taxaPagamento.tax(valor);
+        double taxa = 1 + taxaPagamento.taxa(valor);
 
         this.juros = valor * Math.pow(taxa, prazo);
     }
